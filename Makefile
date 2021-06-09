@@ -2,6 +2,12 @@ SRC=$(SOURCE)
 OPT?=0
 LINK?=0
 
+ifeq ($(VERBOSE),1)
+	VERBOSE:=--verbose --color never --cabal-verbose
+else
+	VERBOSE=
+endif
+
 HS_DIR=hs
 C_DIR=c
 TMP_DIR=build
@@ -45,3 +51,15 @@ build: buildc buildhs
 
 clean:
 	find $(TMP_DIR) -type f -delete
+
+build-ui:
+	node_modules/.bin/esbuild ui/main.jsx --bundle --minify --target=es6 --define:process.env.NODE_ENV="\"production\"" --outfile=static/main.js
+
+dev-ui:
+	node_modules/.bin/esbuild ui/main.jsx static/main.css --sourcemap --bundle --define:process.env.NODE_ENV="\"development\""  --serve --outdir=static
+
+build-web:
+	stack build
+
+watch:
+	stack build --file-watch --test --no-run-tests --local-bin-path bin --copy-bins $(VERBOSE)

@@ -1,0 +1,5 @@
+.stack-work/
+*~
+bin/
+node_modules/
+static/main.js
