@@ -24,6 +24,7 @@ info:
 
 buildc:
 	mkdir -p $(TMP_DIR)
+	cp $(C_DIR)/$(SRC).c $(TMP_DIR)/$(SRC).c
 	clang -S -emit-llvm $(C_DIR)/$(SRC).c
 	mv $(SRC).ll $(TMP_DIR)/$(SRC).ll
 	opt -S -O$(OPT) $(TMP_DIR)/$(SRC).ll -o $(TMP_DIR)/$(SRC)-opt.ll
