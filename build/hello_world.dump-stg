@@ -1,0 +1,36 @@
+
+==================== STG: ====================
+2021-06-10 06:10:39.036951 UTC
+
+sat_sKg :: GHC.Base.String
+[LclId] =
+    \u [] GHC.CString.unpackCString# "Hello, World!"#;
+
+Main.main :: GHC.Types.IO ()
+[GblId] =
+    \u [] System.IO.putStrLn sat_sKg;
+
+:Main.main :: GHC.Types.IO ()
+[GblId] =
+    \u [] GHC.TopHandler.runMainIO Main.main;
+
+$trModule1_rDZ :: GHC.Prim.Addr#
+[GblId, Caf=NoCafRefs, Unf=OtherCon []] =
+    "main"#;
+
+$trModule2_rE5 :: GHC.Types.TrName
+[GblId, Caf=NoCafRefs, Unf=OtherCon []] =
+    CCS_DONT_CARE GHC.Types.TrNameS! [$trModule1_rDZ];
+
+$trModule3_rE6 :: GHC.Prim.Addr#
+[GblId, Caf=NoCafRefs, Unf=OtherCon []] =
+    "Main"#;
+
+$trModule4_rE7 :: GHC.Types.TrName
+[GblId, Caf=NoCafRefs, Unf=OtherCon []] =
+    CCS_DONT_CARE GHC.Types.TrNameS! [$trModule3_rE6];
+
+Main.$trModule :: GHC.Types.Module
+[GblId, Caf=NoCafRefs, Unf=OtherCon []] =
+    CCS_DONT_CARE GHC.Types.Module! [$trModule2_rE5 $trModule4_rE7];
+

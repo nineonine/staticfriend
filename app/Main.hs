@@ -10,9 +10,12 @@ import Data.Monoid (mconcat)
 
 main :: IO ()
 main = do
-    -- indexHTML <- readFile "ui/index.html"
+    let indexHTML = "static/index.html"
     scotty 9999 $ do
         middleware $ staticPolicy (noDots >-> addBase "static")
+
         get "/" $ do
-            file "static/index.html"
-            -- html $ L.pack indexHTML
+            file indexHTML
+
+        get "/session" $ do
+            file indexHTML

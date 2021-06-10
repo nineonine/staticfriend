@@ -1,0 +1,72 @@
+/*
+
+// #1F271B Pine Tree
+// #0B4F6C Blue Sapphire
+// #145C9E Lapis Lazulli
+// #CBB9A8 Pale Silver
+// #DCC7BE Chanpagne Pink
+
+*/
+
+html,
+body {
+    height: 100%;
+    background-color: #F2F7F2;
+}
+
+/* #header {
+} */
+
+.source-header {
+    color: #FF7F11;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    margin: 0;
+    font-size: large;
+}
+
+.syntax-highlight-container {
+    height: 100%;
+    overflow-y:auto;
+    margin: 0 15 0 15;
+}
+
+#editor-area {
+    display: flex;
+    flex-direction: row;
+    height: 80%;
+}
+
+#editor-area-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.source-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+}
+
+#source-in {
+    flex-grow: 6;
+}
+
+#source-out {
+    flex-grow: 6;
+}
+
+#middle-panel {
+    flex-grow: 1;
+    background-color: #F2F7F2;
+}
+
+#editor-control-panel {
+    height: 7%;
+    width: 100%;
+    margin: 0 15px 0 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}

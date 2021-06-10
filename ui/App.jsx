@@ -23,7 +23,7 @@ function App() {
             <Link to="/about">About</Link>
           </li>
           <li>
-            <Link to="/editor">Editor</Link>
+            <Link to="/session">Start Session</Link>
           </li>
         </ul>
 
@@ -36,7 +36,7 @@ function App() {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/editor">
+          <Route path="/session">
             <Editor />
           </Route>
         </Switch>

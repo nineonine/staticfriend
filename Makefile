@@ -58,7 +58,7 @@ build-ui:
 dev-ui:
 	node_modules/.bin/esbuild ui/main.jsx static/main.css --sourcemap --bundle --define:process.env.NODE_ENV="\"development\""  --serve --outdir=static
 
-build-web:
+build-app:
 	stack build
 
 watch:
