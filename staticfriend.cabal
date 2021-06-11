@@ -27,13 +27,21 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      StaticFriend
+      Session.Service
+      Session.Snippet
+      Session.State
+  default-extensions:
+      DeriveGeneric
   other-modules:
       Paths_staticfriend
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , aeson
+    , containers
+    , filepath
   default-language: Haskell2010
 
 executable staticfriend-exe

@@ -27,7 +27,6 @@ body {
 
 .syntax-highlight-container {
     height: 100%;
-    overflow-y:auto;
     margin: 0 15 0 15;
 }
 
@@ -69,4 +68,5 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    align-content: flex-start;
 }

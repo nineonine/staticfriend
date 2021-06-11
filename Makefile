@@ -53,7 +53,7 @@ clean:
 	find $(TMP_DIR) -type f -delete
 
 build-ui:
-	node_modules/.bin/esbuild ui/main.jsx --bundle --minify --target=es6 --define:process.env.NODE_ENV="\"production\"" --outfile=static/main.js
+	node_modules/.bin/esbuild ui/main.jsx --bundle --minify --target=es6 --define:process.env.NODE_ENV="\"production\"" --outfile=static/main.js --sourcemap
 
 dev-ui:
 	node_modules/.bin/esbuild ui/main.jsx static/main.css --sourcemap --bundle --define:process.env.NODE_ENV="\"development\""  --serve --outdir=static

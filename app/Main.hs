@@ -1,12 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import Data.Monoid (mconcat)
 import qualified Data.Text.Lazy as L
 
 import Network.Wai.Middleware.Static
 import Web.Scotty
 
-import Data.Monoid (mconcat)
+import StaticFriend
+
 
 main :: IO ()
 main = do
@@ -19,3 +21,9 @@ main = do
 
         get "/session" $ do
             file indexHTML
+
+        post "/api/session" $ do
+            sessionState <- liftAndCatchIO $ do
+                print "Loading snippets from file system"
+                dummyLoad
+            json sessionState

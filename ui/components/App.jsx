@@ -6,9 +6,9 @@ import {
   Link
 } from "react-router-dom";
 
-import About from './About.jsx';
-import Editor from './Editor.jsx';
-import Home from './Home.jsx';
+import About from './About';
+import SessionContainer from './SessionContainer';
+import Home from './Home';
 
 function App() {
 
@@ -37,7 +37,7 @@ function App() {
             <About />
           </Route>
           <Route path="/session">
-            <Editor />
+            <SessionContainer />
           </Route>
         </Switch>
       </div>
