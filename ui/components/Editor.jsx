@@ -3,10 +3,11 @@ import SourceCode from './SourceCode';
 
 function Editor(props) {
 
+  // https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD
   const fixupLang = (lang) => {
     if (lang == "Haskell") return "haskell";
     if (lang == "X86") return "x86asm";
-    if (lang == "C") return "c'";
+    if (lang == "C") return "c";
     if (lang == "LLVM") return "llvm";
   }
 

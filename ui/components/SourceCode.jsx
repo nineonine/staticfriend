@@ -13,7 +13,13 @@ function SourceCode(props) {
 	  style={a11yDark}
 	  showLineNumbers={true}
 	  customStyle={{'height': 'inherit', 'margin':0}}
+	  wrapLines={true}
 	  wrapLongLines={true}
+	  lineProps={(lineNumber) => ({
+		style: { display: "block", cursor: "pointer" },
+		onClick: () => {
+		  alert(`Line Number Clicked: ${lineNumber}`);
+		}})}
 	>
 	  {props.source}
 	</SyntaxHighlighter>
