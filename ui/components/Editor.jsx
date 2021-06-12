@@ -27,6 +27,7 @@ function Editor(props) {
           source={props.target}
           id={'source-out'}
           language={fixupLang(props.target_out)}
+          update_target_loc={props.update_target_loc}
         />
       </div>
     </div>

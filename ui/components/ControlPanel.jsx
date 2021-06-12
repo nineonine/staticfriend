@@ -25,7 +25,8 @@ function ControlPanel(props) {
 
     const { source, target, optimization, program_sample
           , source_onChange, opt_onChange, target_onChange
-          , program_sample_onChange } = props;
+          , program_sample_onChange
+          , target_loc } = props;
     return (
       <div id={'editor-control-panel'}>
         <Select
@@ -56,6 +57,7 @@ function ControlPanel(props) {
           placeholder={'Program'}
           onChange={program_sample_onChange}
         />
+        <span style={{'margin-top':'25px'}}>Selected Line:  {target_loc}</span>
       </div>
     );
 }

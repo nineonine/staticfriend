@@ -21,10 +21,12 @@ class SessionContainer extends React.Component {
 			source_opt: 'C',
 			target_opt: 'X86',
 			optimization_opt: 'O0',
-			program_opt: 'HelloWorld'
+			program_opt: 'HelloWorld',
+			target_loc: 1
 		}
 		this._runSession = this._runSession.bind(this);
 		this._updateSessionState = this._updateSessionState.bind(this);
+		this._updateSessionStatePrim = this._updateSessionStatePrim.bind(this);
     }
 
 	componentDidUpdate() {
@@ -58,6 +60,10 @@ class SessionContainer extends React.Component {
 		}
 	}
 
+	_updateSessionStatePrim(stateField) {
+		return (v, f) => {this.setState({[stateField]: v});}
+	}
+
     render() {
 		const {sessionState} = this.props;
 		const {
@@ -77,12 +83,14 @@ class SessionContainer extends React.Component {
 					target_onChange={this._runSession(this._updateSessionState('target_opt'))}
 					opt_onChange={this._runSession(this._updateSessionState('optimization_opt'))}
 					program_sample_onChange={this._runSession(this._updateSessionState('program_opt'))}
+					target_loc={this.state.target_loc}
 				/>
 				<Editor
 					source={sessionState.source}
 					target={sessionState.target}
 					source_in={source_opt}
 					target_out={target_opt}
+					update_target_loc={this._updateSessionStatePrim('target_loc')}
 				/>
 			</div>
 		)

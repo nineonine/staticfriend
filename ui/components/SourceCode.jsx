@@ -16,10 +16,10 @@ function SourceCode(props) {
 	  wrapLines={true}
 	  wrapLongLines={true}
 	  lineProps={(lineNumber) => ({
-		style: { display: "block", cursor: "pointer" },
-		onClick: () => {
-		  alert(`Line Number Clicked: ${lineNumber}`);
-		}})}
+			style: { display: "block", cursor: "pointer" },
+			onClick: () => {
+				props.update_target_loc?.(lineNumber)}}
+		)}
 	>
 	  {props.source}
 	</SyntaxHighlighter>
