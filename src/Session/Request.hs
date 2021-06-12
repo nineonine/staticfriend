@@ -4,8 +4,8 @@ import Data.Aeson (FromJSON)
 import GHC.Generics
 
 data SessionRequest = SessionRequest
-    { session_source_in    :: String
-    , session_source_out   :: String
+    { session_source       :: String
+    , session_target       :: String
     , session_optimization :: String
     , session_program      :: String
     } deriving Generic

@@ -6,22 +6,29 @@ import ControlPanel from './ControlPanel';
 
 import { sessionActions } from '../actions';
 
+/*
+
+	Main Session Controller
+
+*/
+
 class SessionContainer extends React.Component {
 	static propTypes = {
 	};
     constructor() {
         super();
 		this.state = {
-			source_in_opt: 'C',
-			source_out_opt: 'X86',
+			source_opt: 'C',
+			target_opt: 'X86',
 			optimization_opt: 'O0',
 			program_opt: 'HelloWorld'
 		}
-		this.updateSourceIn = this.updateSourceIn.bind(this);
-		this.updateSourceOut = this.updateSourceOut.bind(this);
+		this.updateSource = this.updateSource.bind(this);
+		this.updateTarget = this.updateTarget.bind(this);
 		this.updateOptimization = this.updateOptimization.bind(this);
 		this.updateProgram = this.updateProgram.bind(this);
 		this._runSession = this._runSession.bind(this);
+		this._updateSessionState = this._updateSessionState.bind(this);
     }
 
 	componentDidUpdate() {
@@ -32,14 +39,14 @@ class SessionContainer extends React.Component {
 		return function(a) {
 			action(a, function() {
 				const {
-					source_in_opt,
-					source_out_opt,
+					source_opt,
+					target_opt,
 					optimization_opt,
 					program_opt,
 				} = this.state;
 				this.props.dispatch(sessionActions.runSession(
-					source_in_opt,
-					source_out_opt,
+					source_opt,
+					target_opt,
 					optimization_opt,
 					program_opt
 				));
@@ -47,52 +54,39 @@ class SessionContainer extends React.Component {
 		}
 	}
 
-	updateSourceIn({value}, f) {
-		this.setState({
-			source_in_opt: value
-		}, f)
-	}
-	updateSourceOut({value}, f) {
-		this.setState({
-			source_out_opt: value
-		}, f)
-	}
-	updateOptimization({value}, f) {
-		this.setState({
-			optimization_opt: value
-		}, f)
-	}
-	updateProgram({value}, f) {
-		this.setState({
-			program_opt: value
-		}, f)
+	_updateSessionState(stateField) {
+		return ({value}, f) => {
+			this.setState({
+				[stateField]: value
+			}, f);
+		}
 	}
 
     render() {
 		const {sessionState} = this.props;
 		const {
-			source_in_opt,
-			source_out_opt,
+			source_opt,
+			target_opt,
 			optimization_opt,
 			program_opt,
 		} = this.state;
 		return (
 			<div id='editor-area-container'>
 				<ControlPanel
-					source_in={source_in_opt}
-					source_out={source_out_opt}
+					source={source_opt}
+					target={target_opt}
 					optimization={optimization_opt}
 					program_sample={program_opt}
-					source_in_onChange={this._runSession(this.updateSourceIn)}
-					source_out_onChange={this._runSession(this.updateSourceOut)}
-					opt_onChange={this._runSession(this.updateOptimization)}
-					program_sample_onChange={this._runSession(this.updateProgram)}
+					source_onChange={this._runSession(this._updateSessionState('source_opt'))}
+					target_onChange={this._runSession(this._updateSessionState('target_opt'))}
+					opt_onChange={this._runSession(this._updateSessionState('optimization_opt'))}
+					program_sample_onChange={this._runSession(this._updateSessionState('program_opt'))}
 				/>
 				<Editor
-					source={sessionState?.source_in}
-					target={sessionState?.source_out}
-					source_in={source_in_opt}
-					source_out={source_out_opt}
+					source={sessionState.source}
+					target={sessionState.target}
+					source_in={source_opt}
+					target_out={target_opt}
 				/>
 			</div>
 		)

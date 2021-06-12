@@ -14,7 +14,7 @@ loadSourceFiles snipReq = do
 parseSessionRequest :: SessionRequest -> SnippetRequest
 parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt
     where
-    src    :: SourceLang    = read session_source_in
-    target :: TargetLang    = read session_source_out
+    src    :: SourceLang    = read session_source
+    target :: TargetLang    = read session_target
     prog   :: SampleProgram = read session_program
     opt    :: OptLevel      = read session_optimization

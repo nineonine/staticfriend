@@ -26,7 +26,7 @@ function Editor(props) {
         <SourceCode
           source={props.target}
           id={'source-out'}
-          language={fixupLang(props.source_out)}
+          language={fixupLang(props.target_out)}
         />
       </div>
     </div>

@@ -5,7 +5,7 @@ import {
 } from '../actions/types';
 
 const runSession = (state = {
-    sessionState: {source_in: 'in', source_out: 'out'},
+    sessionState: {source: 'in', target: 'out'},
     fetching: false,
     error: undefined
 }, action) => {

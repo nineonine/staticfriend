@@ -5,10 +5,10 @@ import {
     RUN_SESSION_START
 } from './types';
 
-export const runSession = (session_source_in, session_source_out, session_optimization, session_program) => {
+export const runSession = (session_source, session_target, session_optimization, session_program) => {
     return dispatch => {
         dispatch({type:RUN_SESSION_START});
-        const reqBody = {session_source_in, session_source_out, session_optimization, session_program};
+        const reqBody = {session_source, session_target, session_optimization, session_program};
         api.post('/session', reqBody)
         .then((response) => {
             if (response.ok) {

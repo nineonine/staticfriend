@@ -5,8 +5,8 @@ import GHC.Generics
 
 -- | Session Execution Response object
 data SessionState = SessionState
-    { source_in  :: String
-    , source_out :: String
+    { source  :: String
+    , target  :: String
     } deriving (Show,Eq, Generic)
 
 mkSessionState :: String -> String -> SessionState

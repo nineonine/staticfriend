@@ -3,7 +3,7 @@ import Select from 'react-select';
 
 function ControlPanel(props) {
 
-    const source_in_options = [
+    const source_options = [
       {value: 'Haskell', label: 'Haskell'},
       {value: 'C', label: 'C'}
     ];
@@ -12,7 +12,7 @@ function ControlPanel(props) {
       {value: 'O1', label: 'O1'},
       {value: 'O2', label: 'O2'}
     ];
-    const source_out_options = [
+    const target_options = [
       {value: 'X86', label: 'X86'},
       {value: 'LLVM', label: 'LLVM'}
     ];
@@ -23,36 +23,38 @@ function ControlPanel(props) {
       {value: 'Enum', label: 'Enum'}
     ];
 
-    const {source_in, source_out, optimization, program_sample} = props;
+    const { source, target, optimization, program_sample
+          , source_onChange, opt_onChange, target_onChange
+          , program_sample_onChange } = props;
     return (
       <div id={'editor-control-panel'}>
         <Select
-          value={{value: source_in, label: source_in}}
-          options={source_in_options}
+          value={{value: source, label: source}}
+          options={source_options}
           className={'editor-control-container'}
           placeholder={'Source in'}
-          onChange={props.source_in_onChange}
+          onChange={source_onChange}
         />
         <Select
           value={{value: optimization, label: optimization}}
           options={optimizations}
           className={'editor-control-container'}
           placeholder={'Optimization'}
-          onChange={props.opt_onChange}
+          onChange={opt_onChange}
         />
         <Select
-          value={{value: source_out, label: source_out}}
-          options={source_out_options}
+          value={{value: target, label: target}}
+          options={target_options}
           className={'editor-control-container'}
           placeholder={'Source out'}
-          onChange={props.source_out_onChange}
+          onChange={target_onChange}
         />
         <Select
           value={{value: program_sample, label: program_sample}}
           options={sample_prog_opts}
           className={'editor-control-container'}
           placeholder={'Program'}
-          onChange={props.program_sample_onChange}
+          onChange={program_sample_onChange}
         />
       </div>
     );
