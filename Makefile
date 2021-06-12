@@ -63,3 +63,6 @@ build-app:
 
 watch:
 	stack build --file-watch --test --no-run-tests --local-bin-path bin --copy-bins $(VERBOSE)
+
+run-app:
+	stack run
