@@ -91,6 +91,8 @@ class SessionContainer extends React.Component {
 				<Editor
 					source={sessionState?.source_in}
 					target={sessionState?.source_out}
+					source_in={source_in_opt}
+					source_out={source_out_opt}
 				/>
 			</div>
 		)

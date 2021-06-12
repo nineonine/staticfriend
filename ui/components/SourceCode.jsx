@@ -13,6 +13,7 @@ function SourceCode(props) {
 	  style={a11yDark}
 	  showLineNumbers={true}
 	  customStyle={{'height': 'inherit', 'margin':0}}
+	  wrapLongLines={true}
 	>
 	  {props.source}
 	</SyntaxHighlighter>

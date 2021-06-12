@@ -36,8 +36,11 @@ getLangFiles SnippetRequest{..} =
     srcFileExt = case source_lang of
         Haskell -> "hs"
         C -> "c"
-    targetFileExt = case source_lang of
-        Haskell -> "dump-asm"
-        C -> "s"
+    targetFileExt = case target_lang of
+        X86 -> case source_lang of
+            Haskell -> "dump-asm"
+            C -> "s"
+        LLVM -> "ll"
+
     srcFile = (srcLangPath source_lang) </> (show sample_prog) <.> srcFileExt
     targetFile = targetLangPath </> (show sample_prog) <.> targetFileExt

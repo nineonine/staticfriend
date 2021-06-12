@@ -11,10 +11,6 @@ loadSourceFiles snipReq = do
     targetContents  <- readFile outFile
     return (mkSessionState srcContents targetContents)
 
-dummyLoad :: IO SessionState
-dummyLoad = do
-    loadSourceFiles (SnippetRequest Haskell X86 HelloWorld O0)
-
 parseSessionRequest :: SessionRequest -> SnippetRequest
 parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt
     where
