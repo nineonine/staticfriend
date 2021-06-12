@@ -23,10 +23,6 @@ class SessionContainer extends React.Component {
 			optimization_opt: 'O0',
 			program_opt: 'HelloWorld'
 		}
-		this.updateSource = this.updateSource.bind(this);
-		this.updateTarget = this.updateTarget.bind(this);
-		this.updateOptimization = this.updateOptimization.bind(this);
-		this.updateProgram = this.updateProgram.bind(this);
 		this._runSession = this._runSession.bind(this);
 		this._updateSessionState = this._updateSessionState.bind(this);
     }
