@@ -3,6 +3,7 @@ module Session.State where
 import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics
 
+-- | Session Execution Response object
 data SessionState = SessionState
     { source_in  :: String
     , source_out :: String

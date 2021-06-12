@@ -2,41 +2,42 @@ module Session.Snippet where
 
 import System.FilePath.Posix ((</>), (<.>))
 
-data SourceLang = Haskell | C deriving Show
+data SourceLang = Haskell | C deriving (Show, Read)
 
 srcLangPath :: SourceLang -> FilePath
 srcLangPath Haskell = "./hs"
 srcLangPath C = "./c"
 
-data TargetLang = X86 | LLVM deriving Show
+data TargetLang = X86 | LLVM deriving (Show, Read)
 
 targetLangPath :: FilePath
 targetLangPath = "./build"
 
-progFileName :: SampleProgram -> FilePath
-progFileName Enum = "enum"
-progFileName HelloWorld = "hello_world"
-progFileName Fib = "fib"
-progFileName Loop = "loop"
+data OptLevel = O0 | O1 | O2 | O3 deriving (Show, Read)
 
 data SampleProgram
   = Enum
   | HelloWorld
   | Fib
   | Loop
-  deriving Show
+  deriving (Show, Read)
 
-data SnippetRequest = SnippetRequest SourceLang TargetLang SampleProgram
+data SnippetRequest = SnippetRequest {
+    source_lang :: SourceLang
+  , target_lang :: TargetLang
+  , sample_prog :: SampleProgram
+  , opt_level   :: OptLevel
+  } deriving Show
 
 getLangFiles :: SnippetRequest -> (FilePath, FilePath)
-getLangFiles (SnippetRequest srcLang targetLang prog) =
+getLangFiles SnippetRequest{..} =
     (srcFile,targetFile)
     where
-    srcFileExt = case srcLang of
+    srcFileExt = case source_lang of
         Haskell -> "hs"
         C -> "c"
-    targetFileExt = case srcLang of
+    targetFileExt = case source_lang of
         Haskell -> "dump-asm"
         C -> "s"
-    srcFile = (srcLangPath srcLang) </> (progFileName prog) <.> srcFileExt
-    targetFile = targetLangPath </> (progFileName prog) <.> targetFileExt
+    srcFile = (srcLangPath source_lang) </> (show sample_prog) <.> srcFileExt
+    targetFile = targetLangPath </> (show sample_prog) <.> targetFileExt

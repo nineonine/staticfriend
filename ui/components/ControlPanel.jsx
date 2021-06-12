@@ -17,15 +17,13 @@ function ControlPanel(props) {
       {value: 'LLVM', label: 'LLVM'}
     ];
     const sample_prog_opts = [
-      {value: 'hello_world', label: 'hello_world'},
-      {value: 'fib', label: 'fib'},
-      {value: 'loop', label: 'loop'},
-      {value: 'enum', label: 'enum'}
+      {value: 'HelloWorld', label: 'HelloWorld'},
+      {value: 'Fib', label: 'Fib'},
+      {value: 'Loop', label: 'Loop'},
+      {value: 'Enum', label: 'Enum'}
     ];
 
     const {source_in, source_out, optimization, program_sample} = props;
-    console.log("render ControlPanel with ", props);
-    console.log(source_out);
     return (
       <div id={'editor-control-panel'}>
         <Select

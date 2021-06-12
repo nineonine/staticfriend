@@ -22,7 +22,9 @@ main = do
             file indexHTML
 
         post "/api/session" $ do
+            req :: SnippetRequest <- parseSessionRequest <$> jsonData
             sessionState <- liftAndCatchIO $ do
-                putStrLn "[INFO] Loading snippets from file system"
-                dummyLoad
+                putStrLn ("[INFO] Processing Session Request: " <> show req)
+                res :: SessionState <- loadSourceFiles req
+                return res
             json sessionState

@@ -1,5 +1,6 @@
 module Session.Service where
 
+import Session.Request
 import Session.Snippet
 import Session.State
 
@@ -12,4 +13,12 @@ loadSourceFiles snipReq = do
 
 dummyLoad :: IO SessionState
 dummyLoad = do
-    loadSourceFiles (SnippetRequest Haskell X86 HelloWorld)
+    loadSourceFiles (SnippetRequest Haskell X86 HelloWorld O0)
+
+parseSessionRequest :: SessionRequest -> SnippetRequest
+parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt
+    where
+    src    :: SourceLang    = read session_source_in
+    target :: TargetLang    = read session_source_out
+    prog   :: SampleProgram = read session_program
+    opt    :: OptLevel      = read session_optimization

@@ -15,7 +15,7 @@ class SessionContainer extends React.Component {
 			source_in_opt: 'C',
 			source_out_opt: 'X86',
 			optimization_opt: 'O0',
-			program_opt: 'hello_world'
+			program_opt: 'HelloWorld'
 		}
 		this.updateSourceIn = this.updateSourceIn.bind(this);
 		this.updateSourceOut = this.updateSourceOut.bind(this);
@@ -24,11 +24,8 @@ class SessionContainer extends React.Component {
 		this._runSession = this._runSession.bind(this);
     }
 
-	componentDidMount() {
-	}
-
 	componentDidUpdate() {
-		console.log("componentDidUpdate: ", this.state, this.props);
+		// console.log("componentDidUpdate: ", this.state, this.props);
 	}
 
 	_runSession(action) {
@@ -79,17 +76,16 @@ class SessionContainer extends React.Component {
 			optimization_opt,
 			program_opt,
 		} = this.state;
-		console.log("render with new state: ", this.state)
 		return (
 			<div id='editor-area-container'>
 				<ControlPanel
 					source_in={source_in_opt}
-					source_in_onChange={this._runSession(this.updateSourceIn)}
 					source_out={source_out_opt}
-					source_out_onChange={this._runSession(this.updateSourceOut)}
 					optimization={optimization_opt}
-					opt_onChange={this._runSession(this.updateOptimization)}
 					program_sample={program_opt}
+					source_in_onChange={this._runSession(this.updateSourceIn)}
+					source_out_onChange={this._runSession(this.updateSourceOut)}
+					opt_onChange={this._runSession(this.updateOptimization)}
 					program_sample_onChange={this._runSession(this.updateProgram)}
 				/>
 				<Editor
