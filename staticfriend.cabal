@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       StaticFriend
+      Session.Request
       Session.Service
       Session.Snippet
       Session.State

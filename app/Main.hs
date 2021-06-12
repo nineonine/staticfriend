@@ -9,7 +9,6 @@ import Web.Scotty
 
 import StaticFriend
 
-
 main :: IO ()
 main = do
     let indexHTML = "static/index.html"
@@ -24,6 +23,6 @@ main = do
 
         post "/api/session" $ do
             sessionState <- liftAndCatchIO $ do
-                print "Loading snippets from file system"
+                putStrLn "[INFO] Loading snippets from file system"
                 dummyLoad
             json sessionState

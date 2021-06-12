@@ -70,3 +70,8 @@ body {
     justify-content: flex-start;
     align-content: flex-start;
 }
+
+.editor-control-container {
+    width: 15%;
+    margin: 15px 15px 15px 0;
+}

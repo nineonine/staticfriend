@@ -11,18 +11,87 @@ class SessionContainer extends React.Component {
 	};
     constructor() {
         super();
+		this.state = {
+			source_in_opt: 'C',
+			source_out_opt: 'X86',
+			optimization_opt: 'O0',
+			program_opt: 'hello_world'
+		}
+		this.updateSourceIn = this.updateSourceIn.bind(this);
+		this.updateSourceOut = this.updateSourceOut.bind(this);
+		this.updateOptimization = this.updateOptimization.bind(this);
+		this.updateProgram = this.updateProgram.bind(this);
+		this._runSession = this._runSession.bind(this);
     }
 
 	componentDidMount() {
-		const {dispatch} = this.props;
-    	dispatch(sessionActions.runSession());
+	}
+
+	componentDidUpdate() {
+		console.log("componentDidUpdate: ", this.state, this.props);
+	}
+
+	_runSession(action) {
+		return function(a) {
+			action(a, function() {
+				const {
+					source_in_opt,
+					source_out_opt,
+					optimization_opt,
+					program_opt,
+				} = this.state;
+				this.props.dispatch(sessionActions.runSession(
+					source_in_opt,
+					source_out_opt,
+					optimization_opt,
+					program_opt
+				));
+			});
+		}
+	}
+
+	updateSourceIn({value}, f) {
+		this.setState({
+			source_in_opt: value
+		}, f)
+	}
+	updateSourceOut({value}, f) {
+		this.setState({
+			source_out_opt: value
+		}, f)
+	}
+	updateOptimization({value}, f) {
+		this.setState({
+			optimization_opt: value
+		}, f)
+	}
+	updateProgram({value}, f) {
+		this.setState({
+			program_opt: value
+		}, f)
 	}
 
     render() {
 		const {sessionState} = this.props;
+		const {
+			source_in_opt,
+			source_out_opt,
+			optimization_opt,
+			program_opt,
+		} = this.state;
+		console.log("render with new state: ", this.state)
 		return (
 			<div id='editor-area-container'>
-				<ControlPanel />
+				<ControlPanel
+					source_in={source_in_opt}
+					source_in_onChange={this._runSession(this.updateSourceIn)}
+					source_out={source_out_opt}
+					source_out_onChange={this._runSession(this.updateSourceOut)}
+					optimization={optimization_opt}
+					opt_onChange={this._runSession(this.updateOptimization)}
+					program_sample={program_opt}
+					program_sample_onChange={this._runSession(this.updateProgram)}
+				/>
 				<Editor
 					source={sessionState?.source_in}
 					target={sessionState?.source_out}
@@ -38,9 +107,5 @@ const mapStateToProps = (state) => {
 		sessionState
 	}
 }
-
-// const mapDispatchToProps = {
-// 	sessionActions.runSession
-// }
 
 export default connect(mapStateToProps, null)(SessionContainer);

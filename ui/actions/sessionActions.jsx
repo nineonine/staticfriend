@@ -5,7 +5,7 @@ import {
     RUN_SESSION_START
 } from './types';
 
-export const runSession = () => {
+export const runSession = (source_in, source_out, optimization, program) => {
     return dispatch => {
         dispatch({type:RUN_SESSION_START});
         api.post('/session')
