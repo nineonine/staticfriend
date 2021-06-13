@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
-import Editor from './Editor';
+import CodeArea from './CodeArea';
 import ControlPanel from './ControlPanel';
 
 import { sessionActions } from '../actions';
@@ -53,11 +53,7 @@ class SessionContainer extends React.Component {
 	}
 
 	_updateSessionState(stateField) {
-		return ({value}, f) => {
-			this.setState({
-				[stateField]: value
-			}, f);
-		}
+		return ({value}, f) => {this.setState({ [stateField]: value}, f);}
 	}
 
 	_updateSessionStatePrim(stateField) {
@@ -85,7 +81,7 @@ class SessionContainer extends React.Component {
 					program_sample_onChange={this._runSession(this._updateSessionState('program_opt'))}
 					target_loc={this.state.target_loc}
 				/>
-				<Editor
+				<CodeArea
 					source={sessionState.source}
 					target={sessionState.target}
 					source_in={source_opt}

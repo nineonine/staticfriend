@@ -1,7 +1,7 @@
 import React from 'react';
 import SourceCode from './SourceCode';
 
-function Editor(props) {
+function CodeArea(props) {
 
   // https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD
   const fixupLang = (lang) => {
@@ -35,4 +35,4 @@ function Editor(props) {
   );
 }
 
-export default Editor;
+export default CodeArea;
