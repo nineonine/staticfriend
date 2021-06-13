@@ -14,10 +14,14 @@ function SourceCode(props) {
 	  showLineNumbers={true}
 	  customStyle={{'height': 'inherit', 'margin':0}}
 	  wrapLines={true}
-	  wrapLongLines={true}
 	  lineProps={(lineNumber) => ({
-			style: { display: "block", cursor: "pointer" },
-			onClick: () => {
+		  	className:'target-line-span',
+			id: 'target-line-' + lineNumber,
+			style: { display: 'block',
+					 cursor: 'pointer',
+					 ...(lineNumber==props.target_loc ? {'background-color':'white'} : {})
+				   },
+			  onClick: () => {
 				props.update_target_loc?.(lineNumber)}}
 		)}
 	>
