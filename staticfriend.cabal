@@ -32,10 +32,13 @@ library
       Session.Service
       Session.Snippet
       Session.State
+      X86.AST
+      X86.Parser
   default-extensions:
       DeriveGeneric
       RecordWildCards
       ScopedTypeVariables
+      OverloadedStrings
   other-modules:
       Paths_staticfriend
   hs-source-dirs:
@@ -45,6 +48,9 @@ library
     , aeson
     , containers
     , filepath
+    , megaparsec
+    , parser-combinators
+    , text
   default-language: Haskell2010
 
 executable staticfriend-exe

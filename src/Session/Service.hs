@@ -1,5 +1,7 @@
 module Session.Service where
 
+import qualified Data.Map.Strict as Map
+
 import Session.Request
 import Session.Snippet
 import Session.State
@@ -9,7 +11,8 @@ loadSourceFiles snipReq = do
     let (inFile,outFile) = getLangFiles snipReq
     srcContents <- readFile inFile
     targetContents  <- readFile outFile
-    return (mkSessionState srcContents targetContents)
+    let targetWithMeta = Map.fromList (zip [1..] (lines targetContents))
+    return (mkSessionState srcContents targetContents targetWithMeta)
 
 parseSessionRequest :: SessionRequest -> SnippetRequest
 parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import CodeArea from './CodeArea';
 import ControlPanel from './ControlPanel';
+import InsightPanel from './InsightPanel';
 
 import { sessionActions } from '../actions';
 
@@ -22,7 +23,8 @@ class SessionContainer extends React.Component {
 			target_opt: 'X86',
 			optimization_opt: 'O0',
 			program_opt: 'HelloWorld',
-			target_loc: -1
+			target_loc: -1,
+			current_insight: ''
 		}
 		this._runSession = this._runSession.bind(this);
 		this._updateSessionState = this._updateSessionState.bind(this);
@@ -89,6 +91,11 @@ class SessionContainer extends React.Component {
 					update_target_loc={this._updateSessionStatePrim('target_loc')}
 					target_loc={this.state.target_loc}
 				/>
+				<InsightPanel>
+					<span>{ this.state.target_loc==-1 ? ''
+				          : sessionState.target_with_meta[this.state.target_loc]}
+					</span>
+				</InsightPanel>
 			</div>
 		)
     }
