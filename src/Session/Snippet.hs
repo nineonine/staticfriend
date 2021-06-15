@@ -1,5 +1,6 @@
 module Session.Snippet where
 
+import Prelude
 import System.FilePath.Posix ((</>), (<.>))
 
 data SourceLang = Haskell | C deriving (Show, Read)

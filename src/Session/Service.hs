@@ -1,6 +1,10 @@
 module Session.Service where
 
+import Prelude hiding (readFile, lines)
+import Protolude (readFile, lines)
+import qualified Data.Text as T
 import qualified Data.Map.Strict as Map
+
 
 import Session.Request
 import Session.Snippet
@@ -17,7 +21,7 @@ loadSourceFiles snipReq = do
 parseSessionRequest :: SessionRequest -> SnippetRequest
 parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt
     where
-    src    :: SourceLang    = read session_source
-    target :: TargetLang    = read session_target
-    prog   :: SampleProgram = read session_program
-    opt    :: OptLevel      = read session_optimization
+    src    :: SourceLang    = read (T.unpack session_source)
+    target :: TargetLang    = read (T.unpack session_target)
+    prog   :: SampleProgram = read (T.unpack session_program)
+    opt    :: OptLevel      = read (T.unpack session_optimization)

@@ -1,5 +1,6 @@
 module X86.AST where
 
+import Protolude
 import Data.Text
 {-
 
@@ -12,11 +13,12 @@ https://wiki.cdot.senecacollege.ca/wiki/X86_64_Register_and_Instruction_Quick_St
 -}
 
 type LabelId = Text
+type Function = Text
 
 type X86Program = [Opcode]
 
 data Opcode = Instr Instruction
-            | Directive Text
+            | Directive Text Text
             | Label LabelId
             | Comment Text
             | NotImplementedOpcode Text
@@ -24,10 +26,17 @@ data Opcode = Instr Instruction
 
 data OSize = T | Q | L | W | S | B deriving Show
 
+readOSize :: Char -> OSize
+readOSize 't' = T
+readOSize 'q' = Q
+readOSize 'l' = L
+readOSize 'W' = W
+readOSize 'B' = B
+
 data Instruction
     = Add OSize Operand Operand
     | Sub OSize Operand Operand
-    | Call Text
+    | Call Function
     | Lea OSize Operand Operand
     | Mov OSize Operand Operand
     | Push OSize Operand
@@ -35,6 +44,39 @@ data Instruction
     | Ret OSize
     | NotImplementedMnemonic Text
     deriving Show
+
+numOfOperands :: Text -> Int
+numOfOperands mnem
+    | elem mnem [ "ret" ]
+    = 0
+    | elem mnem [ "push", "pop", "call" ]
+    = 1
+    | elem mnem [ "add", "sub", "lea", "mov" ]
+    = 2
+    | otherwise
+    = panic "numOfOperands: not implemented"
+
+mkCallInstr :: Function -> Instruction
+mkCallInstr = Call
+
+mkINstr_os0 :: Text -> (OSize -> Instruction)
+mkINstr_os0 = \case
+    "ret" -> Ret
+    _else -> panic ("mkINstr_os0: " <> _else)
+
+mkINstr_os1 :: Text -> (OSize -> Operand -> Instruction)
+mkINstr_os1 = \case
+    "push" -> Push
+    "pop"  -> Pop
+    _else -> panic ("mkINstr_os1: " <> _else)
+
+mkINstr_os2 :: Text -> (OSize -> Operand -> Operand -> Instruction)
+mkINstr_os2 = \case
+    "add" -> Add
+    "sub" -> Sub
+    "lea" -> Lea
+    "mov" -> Mov
+    _else -> panic ("mkINstr_os2: " <> _else)
 
 data Operand = Reg Register
              | Memory MemoryOperand
