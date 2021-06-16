@@ -17,11 +17,11 @@ type Function = Text
 type X86Program = [Opcode]
 
 data Opcode = Instr Instruction
-            | Directive Text Text
+            | Directive Text [Text]
             | Label LabelId
             | Comment Text
             | NotImplementedOpcode Text
-            deriving Show
+            deriving (Show, Eq)
 
 data OSize = T | Q | L | W | S | B deriving (Show, Eq)
 
@@ -44,7 +44,7 @@ data Instruction
     | Pop OSize Operand
     | Ret OSize
     | NotImplementedMnemonic Text
-    deriving Show
+    deriving (Show, Eq)
 
 numOfOperands :: Text -> Int
 numOfOperands mnem
@@ -82,7 +82,7 @@ mkINstr_os2 = \case
 data Operand = Reg Register
              | Memory MemoryOperand
              | Immediate Literal
-             deriving Show
+             deriving (Show, Eq)
 
 data MemoryOperand = MemOp {
     segment :: Maybe Register
@@ -90,9 +90,9 @@ data MemoryOperand = MemOp {
   , base    :: Maybe Register
   , index   :: Maybe Register
   , scale   :: Maybe Integer
-} deriving Show
+} deriving (Show, Eq)
 
-data Literal = I Int | D Double | Str Text deriving Show
+data Literal = I Int | D Double | Str Text deriving (Show, Eq)
 
 data Register =
             -- | General Purpose
@@ -111,7 +111,7 @@ data Register =
               | EFLAGSReg EFLAGS
             -- TODO: R8-r15, Floating-Point and SIMD
               | NotImplementedReg Text
-            deriving Show
+            deriving (Show, Eq)
 
 data EFLAGS = EFLAGS
             { _CF :: Bool
@@ -131,4 +131,4 @@ data EFLAGS = EFLAGS
             , _VIF :: Bool
             , _VIP :: Bool
             , _ID :: Bool
-            } deriving Show
+            } deriving (Show, Eq)

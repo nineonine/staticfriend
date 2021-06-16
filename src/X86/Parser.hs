@@ -9,6 +9,7 @@ import Text.Megaparsec hiding (Label)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
 import Control.Monad.Combinators (between)
+-- import Text.Megaparsec.Debug
 
 import X86.AST
 
@@ -18,16 +19,17 @@ parseX86Source :: Text -> X86Program
 parseX86Source str = undefined
 
 parseOpCode :: Parser Opcode
-parseOpCode = choice
-    [ Instr <$> parseInstruction
-    , (uncurry Directive) <$> parseDirective
-    , Label <$> parseLabel
-    , Comment <$> parseComment
-    , NotImplementedOpcode <$> parseNotImpl]
+parseOpCode = do
+    space
+    choice
+        [ Instr <$> parseInstruction
+        , (uncurry Directive) <$> parseDirective
+        , Label <$> parseLabel
+        , Comment <$> parseComment
+        , NotImplementedOpcode <$> parseNotImpl]
 
 parseInstruction :: Parser Instruction
 parseInstruction = do
-    space
     mnemonic <- parseMnemonic
     oSize    <- parseOSize
     case numOfOperands mnemonic of
@@ -47,17 +49,22 @@ parseMnemonic = choice
 parseOSize :: Parser OSize
 parseOSize = readOSize <$> choice (map char ['t','q','l','w','s','b'])
 
-parseDirective :: Parser (Text,Text)
+parseDirective :: Parser (Text,[Text])
 parseDirective = do
-    space
-    dot
+    void $ char '.'
     dirName :: Text <- takeWhile1P Nothing isAlphaNum
     space
-    rest :: Text <- takeWhile1P Nothing isAlphaNum
-    pure (dirName, rest)
+    dir_args :: [Text] <-
+        sepBy
+            (space >> takeWhileP Nothing
+                                 ((||) <$> isAlphaNum
+                                       <*> (=='_'))
+                   <* space)
+            (char ',')
+    pure (dirName, if dir_args == [""] then [] else dir_args)
 
 parseLabel :: Parser Text
-parseLabel = takeWhile1P Nothing ((/=':'))
+parseLabel = space >> takeWhile1P Nothing ((/=':'))
 
 parseComment :: Parser Text
 parseComment = undefined
@@ -76,6 +83,3 @@ parseLiteral = undefined
 
 parens :: Parser a -> Parser a
 parens = between (char '(') (char ')')
-
-dot :: Parser ()
-dot = void $ char '.'

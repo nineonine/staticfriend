@@ -66,3 +66,6 @@ watch:
 
 run-app:
 	stack run
+
+test-app:
+	stack test
