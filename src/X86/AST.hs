@@ -1,7 +1,6 @@
 module X86.AST where
 
 import Protolude
-import Data.Text
 {-
 
 https://sourceware.org/binutils/docs/as/
@@ -24,14 +23,16 @@ data Opcode = Instr Instruction
             | NotImplementedOpcode Text
             deriving Show
 
-data OSize = T | Q | L | W | S | B deriving Show
+data OSize = T | Q | L | W | S | B deriving (Show, Eq)
 
 readOSize :: Char -> OSize
 readOSize 't' = T
 readOSize 'q' = Q
 readOSize 'l' = L
-readOSize 'W' = W
-readOSize 'B' = B
+readOSize 'w' = W
+readOSize 'b' = B
+readOSize 's' = S
+readOSize _   = panic "readOSize"
 
 data Instruction
     = Add OSize Operand Operand

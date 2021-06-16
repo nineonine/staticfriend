@@ -1,2 +1,8 @@
+module Main where
+
+import X86ParserTest (testx86Parser)
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = do
+    --
+    testx86Parser

@@ -1,9 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Monoid (mconcat)
-import qualified Data.Text.Lazy as L
-
+import Prelude
 import Network.Wai.Middleware.Static
 import Web.Scotty
 
