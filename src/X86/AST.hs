@@ -105,13 +105,13 @@ data Register =
               | CS | DS | ES | FS | GS | SS
             -- Indexes and pointers
               | RBP | RSP | RSI | RDI
-              | EPB | ESP | ESI | EDI
+              | EBP | ESP | ESI | EDI
               | BP  | SP  | SI  | DI
             -- EFLAGS
               | EFLAGSReg EFLAGS
             -- TODO: R8-r15, Floating-Point and SIMD
               | NotImplementedReg Text
-            deriving (Show, Eq)
+            deriving (Show, Eq, Read)
 
 data EFLAGS = EFLAGS
             { _CF :: Bool
@@ -131,4 +131,4 @@ data EFLAGS = EFLAGS
             , _VIF :: Bool
             , _VIP :: Bool
             , _ID :: Bool
-            } deriving (Show, Eq)
+            } deriving (Show, Eq, Read)

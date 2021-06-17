@@ -5,6 +5,7 @@ module X86.Parser where
 -}
 
 import Protolude
+import Protolude.Partial (read)
 import Data.Char
 import Data.Void
 
@@ -48,7 +49,7 @@ parseInstruction = do
 
 parseMnemonic :: Parser Text
 parseMnemonic = choice
-    [ "add", "sub", "call", "lea", "mov", "push", "pop", "ret"]
+    ["add", "sub", "call", "lea", "mov", "push", "pop", "ret"]
 
 parseOSize :: Parser OSize
 parseOSize = readOSize <$> choice (map char ['t','q','l','w','s','b'])
@@ -74,13 +75,43 @@ parseComment :: Parser Text
 parseComment = space >> char '#' >> space >> takeWhileP Nothing (not . (==) '\n')
 
 parseNotImpl :: Parser Text
-parseNotImpl = undefined
+parseNotImpl = takeRest
 
 parseOperand :: Parser Operand
 parseOperand = undefined
 
-parseMemoryOperand :: Parser MemoryOperand
-parseMemoryOperand = undefined
+rEGS :: [Text]
+rEGS =
+    [ "rax", "rbx", "rcx", "rdx", "eax", "ebx", "ecx", "edx"
+    , "ax", "bx", "cx", "dx", "ah", "bh", "ch", "dh", "al", "bl", "cl", "dl"
+    , "rbp", "rsp", "rsi", "rdi", "ebp", "esp", "esi", "edi", "bp", "sp", "si", "di"
+    , "cs", "ds", "es", "fs", "gs", "ss"
+    ]
+
+parseRegister :: Parser Register
+parseRegister = do
+    void (char '$')
+    reg <- Data.Text.toUpper <$> choice (map chunk rEGS)
+    return (read $ unpack reg)
+
+-- parseMemoryOperand :: Parser MemoryOperand
+-- parseMemoryOperand = do
+--     s <- segment
+--     void $ char ':'
+--     o <- offset
+--     (b, i, s) <- parens $ do
+--         br <- parseRegister
+--         (space >> char ',' >> space)
+--         ir <- parseRegister
+--         (space >> char ',' >> space)
+--         s <- read <$> digitChar
+--         return (br, ir, space)
+--     return MemOp { segment = s
+--                  , offset  = o
+--                  , base    = b
+--                  , index   = i
+--                  , scale   = s}
+
 
 parseLiteral :: Parser Literal
 parseLiteral = undefined

@@ -1,6 +1,7 @@
 module X86ParserTest where
 
-import Prelude
+import Protolude
+import Data.Text
 import Test.Hspec
 import Test.Hspec.Megaparsec
 import Text.Megaparsec hiding (Label)
@@ -57,8 +58,15 @@ testx86Parser = hspec $ do
             parse parseOpCode "" "    someLabel:   " `shouldParse` (Label "someLabel")
         it "should parse label 2" $ do
             parse parseOpCode "" "L_.str:" `shouldParse` (Label "L_.str")
-        -- COMMENTS (TODO: comments after other)
+        -- COMMENTS (TODO: comments after other opcodes)
         it "should parse comment" $ do
             parse parseOpCode "" "# some comment" `shouldParse` (Comment "some comment")
         it "should parse comment (with spaces)" $ do
             parse parseOpCode "" "       # some comment" `shouldParse` (Comment "some comment")
+        -- Registers
+        for_ rEGS $ \reg ->
+            it ("should parse " <> unpack reg) $ do
+                parse parseRegister "" ("$"<>reg) `shouldParse` (read $ unpack $ Data.Text.toUpper reg)
+        for_ rEGS $ \reg ->
+            it ("should not parse register " <> unpack reg <> " without $ prefix") $ do
+                parse parseRegister "" `shouldFailOn` reg
