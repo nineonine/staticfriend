@@ -57,3 +57,8 @@ testx86Parser = hspec $ do
             parse parseOpCode "" "    someLabel:   " `shouldParse` (Label "someLabel")
         it "should parse label 2" $ do
             parse parseOpCode "" "L_.str:" `shouldParse` (Label "L_.str")
+        -- COMMENTS (TODO: comments after other)
+        it "should parse comment" $ do
+            parse parseOpCode "" "# some comment" `shouldParse` (Comment "some comment")
+        it "should parse comment (with spaces)" $ do
+            parse parseOpCode "" "       # some comment" `shouldParse` (Comment "some comment")

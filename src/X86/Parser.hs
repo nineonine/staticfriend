@@ -1,5 +1,9 @@
 module X86.Parser where
 
+{-
+    Parse AT&T-like assembly language
+-}
+
 import Protolude
 import Data.Char
 import Data.Void
@@ -24,8 +28,8 @@ parseOpCode = do
     choice
         [ Instr <$> parseInstruction
         , (uncurry Directive) <$> parseDirective
-        , Label <$> parseLabel
         , Comment <$> parseComment
+        , Label <$> parseLabel
         , NotImplementedOpcode <$> parseNotImpl]
 
 parseInstruction :: Parser Instruction
@@ -67,7 +71,7 @@ parseLabel :: Parser Text
 parseLabel = space >> takeWhile1P Nothing ((/=':'))
 
 parseComment :: Parser Text
-parseComment = undefined
+parseComment = space >> char '#' >> space >> takeWhileP Nothing (not . (==) '\n')
 
 parseNotImpl :: Parser Text
 parseNotImpl = undefined
