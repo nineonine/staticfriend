@@ -1,7 +1,7 @@
 module X86ParserTest where
 
 import Protolude
-import Data.Text
+import Data.Text hiding (index)
 import Test.Hspec
 import Test.Hspec.Megaparsec
 import Text.Megaparsec hiding (Label)
@@ -108,3 +108,12 @@ testx86Parser = hspec $ do
             parse parseLiteral "" "$-8.9" `shouldParse` (D (-8.9))
         it "should parse literal label" $ do
             parse parseLiteral "" "$labelll" `shouldParse` (Lbl "labelll")
+        -- Instructons
+        it "should parse 2 operand instruction #1" $ do
+            parse parseInstruction "" "movl    $0, -4(%rbp)" `shouldParse`
+                (Mov L (Immediate (I 0)) (Memory
+                    (MemOp { segment = Nothing
+                           , offset = Just (-4)
+                           , base = Just RBP
+                           , index = Nothing
+                           , scale = Nothing})))

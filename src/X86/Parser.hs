@@ -34,11 +34,13 @@ parseInstruction :: Parser Instruction
 parseInstruction = do
     mnemonic <- parseMnemonic
     oSize    <- parseOSize
+    space
     case numOfOperands mnemonic of
         0 -> pure (mkINstr_os0 mnemonic oSize)
         1 -> do o1 <- parseOperand
                 pure (mkINstr_os1 mnemonic oSize o1)
         2 -> do o1 <- parseOperand
+                (char ',' >> space)
                 o2 <- parseOperand
                 pure (mkINstr_os2 mnemonic oSize o1 o2)
         3 -> panic "parseInstruction: 3 operands"
@@ -76,9 +78,9 @@ parseNotImpl = takeRest
 
 parseOperand :: Parser Operand
 parseOperand = choice [
-    Reg <$> parseRegister
+    Immediate <$> parseLiteral
+  , Reg <$> parseRegister
   , Memory <$> parseMemoryOperand
-  , Immediate <$> parseLiteral
   ]
 
 rEGS :: [Text]
