@@ -92,7 +92,7 @@ data MemoryOperand = MemOp {
   , scale   :: Maybe Integer
 } deriving (Show, Eq)
 
-data Literal = I Int | D Double | Str Text deriving (Show, Eq)
+data Literal = I Int | D Double | Lbl LabelId deriving (Show, Eq)
 
 data Register =
             -- | General Purpose

@@ -4,16 +4,13 @@ module X86.Parser where
     Parse AT&T-like assembly language
 -}
 
-import Protolude
+import Protolude hiding (try)
 import Protolude.Partial (read)
-import Data.Char
-import Data.Void
 
 import Data.Text hiding (map)
 import Text.Megaparsec hiding (Label)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Control.Monad.Combinators (between)
 -- import Text.Megaparsec.Debug
 
 import X86.AST
@@ -78,7 +75,11 @@ parseNotImpl :: Parser Text
 parseNotImpl = takeRest
 
 parseOperand :: Parser Operand
-parseOperand = undefined
+parseOperand = choice [
+    Reg <$> parseRegister
+  , Memory <$> parseMemoryOperand
+  , Immediate <$> parseLiteral
+  ]
 
 rEGS :: [Text]
 rEGS =
@@ -90,31 +91,39 @@ rEGS =
 
 parseRegister :: Parser Register
 parseRegister = do
-    void (char '$')
+    void (char '%')
     reg <- Data.Text.toUpper <$> choice (map chunk rEGS)
     return (read $ unpack reg)
 
--- parseMemoryOperand :: Parser MemoryOperand
--- parseMemoryOperand = do
---     s <- segment
---     void $ char ':'
---     o <- offset
---     (b, i, s) <- parens $ do
---         br <- parseRegister
---         (space >> char ',' >> space)
---         ir <- parseRegister
---         (space >> char ',' >> space)
---         s <- read <$> digitChar
---         return (br, ir, space)
---     return MemOp { segment = s
---                  , offset  = o
---                  , base    = b
---                  , index   = i
---                  , scale   = s}
+parseMemoryOperand :: Parser MemoryOperand
+parseMemoryOperand = do
+    -- TODO: this should be restricted to segment registers only: ["cs", "ds", "es", "fs", "gs", "ss"]
+    s <- optional parseRegister
+    when (isJust s) (void (char ':'))
+    o <- optional (L.signed space L.decimal)
+    res <- optional $ parens $ do
+        basereg <- optional (try parseRegister)
+        (space >> optional (char ',') >> space)
+        indexreg <- optional parseRegister
+        (space >> optional (char ',') >> space)
+        scale <- optional L.decimal
+        return (basereg, indexreg, scale)
+    let (b, i, sc) = fromMaybe (Nothing,Nothing,Nothing) res
+    return MemOp { segment = s
+                 , offset  = o
+                 , base    = b
+                 , index   = i
+                 , scale   = sc}
 
 
 parseLiteral :: Parser Literal
-parseLiteral = undefined
+parseLiteral = char '$' *> (choice [
+    (try $ D <$> L.signed space L.float) <|>
+    (I <$> L.signed space L.decimal)
+  , Lbl <$> parseLabel
+  ])
+
+--------------------------------------------------------------------
 
 parens :: Parser a -> Parser a
 parens = between (char '(') (char ')')

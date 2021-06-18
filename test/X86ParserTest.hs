@@ -66,7 +66,45 @@ testx86Parser = hspec $ do
         -- Registers
         for_ rEGS $ \reg ->
             it ("should parse " <> unpack reg) $ do
-                parse parseRegister "" ("$"<>reg) `shouldParse` (read $ unpack $ Data.Text.toUpper reg)
+                parse parseRegister "" ("%"<>reg) `shouldParse` (read $ unpack $ Data.Text.toUpper reg)
         for_ rEGS $ \reg ->
-            it ("should not parse register " <> unpack reg <> " without $ prefix") $ do
+            it ("should not parse register " <> unpack reg <> " without % prefix") $ do
                 parse parseRegister "" `shouldFailOn` reg
+        -- Memory addressing modes
+        it "should parse memory addressing mode (everything present)" $ do
+            parse parseMemoryOperand "" "%cs:-8(%ebp, %edx, 4)" `shouldParse` (MemOp (Just CS) (Just (-8)) (Just EBP) (Just EDX) (Just 4))
+        it "should parse memory addressing mode (no segment)" $ do
+            parse parseMemoryOperand "" "-2(%ebp, %edx, 8)" `shouldParse` (MemOp Nothing (Just (-2)) (Just EBP) (Just EDX) (Just 8))
+        it "should parse memory addressing mode (segment + offset only)" $ do
+            parse parseMemoryOperand "" "%ds:6" `shouldParse` (MemOp (Just DS) (Just 6) Nothing Nothing Nothing)
+        it "should parse memory addressing mode (no segment and offset)" $ do
+            parse parseMemoryOperand "" "(%esp, %ecx, 8)" `shouldParse` (MemOp Nothing Nothing (Just ESP) (Just ECX) (Just 8))
+        it "should parse memory addressing mode (base register only)" $ do
+            parse parseMemoryOperand "" "(%rcx)" `shouldParse` (MemOp Nothing Nothing (Just RCX) Nothing Nothing)
+        it "should parse memory addressing mode (base register and offset)" $ do
+            parse parseMemoryOperand "" "-13(%rcx)" `shouldParse` (MemOp Nothing (Just (-13)) (Just RCX) Nothing Nothing)
+        it "should parse memory addressing mode (base and index regs)" $ do
+            parse parseMemoryOperand "" "(%rcx, %rdx)" `shouldParse` (MemOp Nothing Nothing (Just RCX) (Just RDX) Nothing)
+        it "should parse memory addressing mode (base, index and scale)" $ do
+            parse parseMemoryOperand "" "(%rcx, %rdx, 2)" `shouldParse` (MemOp Nothing Nothing (Just RCX) (Just RDX) (Just 2))
+        it "should parse memory addressing mode (base, index and offset)" $ do
+            parse parseMemoryOperand "" "-5(%rcx, %rdx,)" `shouldParse` (MemOp Nothing (Just (-5)) (Just RCX) (Just RDX) Nothing)
+        it "should parse memory addressing mode (index, offset and scale) - arithmetic" $ do
+            parse parseMemoryOperand "" "9(,%eax,4)" `shouldParse` (MemOp Nothing (Just 9) Nothing (Just EAX) (Just 4))
+        it "should parse memory addressing mode (index and scale) - arithmetic" $ do
+            parse parseMemoryOperand "" "(,%eax,4)" `shouldParse` (MemOp Nothing Nothing Nothing (Just EAX) (Just 4))
+        it "should parse memory addressing mode (base and index) - arithmetic" $ do
+            parse parseMemoryOperand "" "(%ebx,%eax,)" `shouldParse` (MemOp Nothing Nothing (Just EBX) (Just EAX) Nothing)
+        it "should parse memory addressing mode (offset and scale) - arithmetic" $ do
+            parse parseMemoryOperand "" "9(,,4)" `shouldParse` (MemOp Nothing (Just 9) Nothing Nothing (Just 4))
+        -- Literals
+        it "should parse literal integer" $ do
+            parse parseLiteral "" "$3" `shouldParse` (I 3)
+        it "should parse literal integer negative" $ do
+            parse parseLiteral "" "$-12" `shouldParse` (I (-12))
+        it "should parse literal double" $ do
+            parse parseLiteral "" "$4.5" `shouldParse` (D 4.5)
+        it "should parse literal double negative" $ do
+            parse parseLiteral "" "$-8.9" `shouldParse` (D (-8.9))
+        it "should parse literal label" $ do
+            parse parseLiteral "" "$labelll" `shouldParse` (Lbl "labelll")
