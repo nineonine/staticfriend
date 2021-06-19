@@ -32,6 +32,7 @@ parseOpCode = do
 
 parseInstruction :: Parser Instruction
 parseInstruction = do
+    space
     mnemonic <- parseMnemonic
     oSize    <- parseOSize
     space
@@ -41,14 +42,16 @@ parseInstruction = do
                 pure (mkINstr_os1 mnemonic oSize o1)
         2 -> do o1 <- parseOperand
                 (char ',' >> space)
-                o2 <- parseOperand
+                -- can't have immediates in dest
+                o2 <- choice [ Reg <$> parseRegister
+                             , Memory <$> parseMemoryOperand]
                 pure (mkINstr_os2 mnemonic oSize o1 o2)
         3 -> panic "parseInstruction: 3 operands"
         _ -> panic "parseInstruction"
 
 parseMnemonic :: Parser Text
 parseMnemonic = choice
-    ["add", "sub", "call", "lea", "mov", "push", "pop", "ret"]
+    ["add", "sub", "call", "lea", "mov", "push", "pop", "ret", "xor"]
 
 parseOSize :: Parser OSize
 parseOSize = readOSize <$> choice (map char ['t','q','l','w','s','b'])
@@ -88,7 +91,7 @@ rEGS =
     [ "rax", "rbx", "rcx", "rdx", "eax", "ebx", "ecx", "edx"
     , "ax", "bx", "cx", "dx", "ah", "bh", "ch", "dh", "al", "bl", "cl", "dl"
     , "rbp", "rsp", "rsi", "rdi", "ebp", "esp", "esi", "edi", "bp", "sp", "si", "di"
-    , "cs", "ds", "es", "fs", "gs", "ss"
+    , "cs", "ds", "es", "fs", "gs", "ss", "rip", "ip"
     ]
 
 parseRegister :: Parser Register
@@ -97,33 +100,37 @@ parseRegister = do
     reg <- Data.Text.toUpper <$> choice (map chunk rEGS)
     return (read $ unpack reg)
 
+-- https://sourceware.org/binutils/docs/as/i386_002dMemory.html
 parseMemoryOperand :: Parser MemoryOperand
 parseMemoryOperand = do
     -- TODO: this should be restricted to segment registers only: ["cs", "ds", "es", "fs", "gs", "ss"]
     s <- optional parseRegister
     when (isJust s) (void (char ':'))
-    o <- optional (L.signed space L.decimal)
+    d <- optional $ try $
+        (I <$> L.signed space L.decimal) <|> (Lbl <$> takeWhile1P Nothing ((/='(')))
     res <- optional $ parens $ do
         basereg <- optional (try parseRegister)
         (space >> optional (char ',') >> space)
         indexreg <- optional parseRegister
         (space >> optional (char ',') >> space)
-        scale <- optional L.decimal
+        scale <- optional L.decimal -- TODO: accept 1, 2, 4, and 8 only
         return (basereg, indexreg, scale)
     let (b, i, sc) = fromMaybe (Nothing,Nothing,Nothing) res
     return MemOp { segment = s
-                 , offset  = o
+                 , disp    = d
                  , base    = b
                  , index   = i
                  , scale   = sc}
 
 
 parseLiteral :: Parser Literal
-parseLiteral = char '$' *> (choice [
-    (try $ D <$> L.signed space L.float) <|>
-    (I <$> L.signed space L.decimal)
-  , Lbl <$> parseLabel
-  ])
+parseLiteral = do
+    void $ char '$'
+    choice [
+        (try $ D <$> L.signed space L.float) <|>
+        (I <$> L.signed space L.decimal)
+      , Lbl <$> parseLabel
+      ]
 
 --------------------------------------------------------------------
 

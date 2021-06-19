@@ -43,6 +43,7 @@ data Instruction
     | Push OSize Operand
     | Pop OSize Operand
     | Ret OSize
+    | Xor OSize Operand Operand
     | NotImplementedMnemonic Text
     deriving (Show, Eq)
 
@@ -52,7 +53,7 @@ numOfOperands mnem
     = 0
     | elem mnem [ "push", "pop", "call" ]
     = 1
-    | elem mnem [ "add", "sub", "lea", "mov" ]
+    | elem mnem [ "add", "sub", "lea", "mov", "xor" ]
     = 2
     | otherwise
     = panic "numOfOperands: not implemented"
@@ -77,6 +78,7 @@ mkINstr_os2 = \case
     "sub" -> Sub
     "lea" -> Lea
     "mov" -> Mov
+    "xor" -> Xor
     _else -> panic ("mkINstr_os2: " <> _else)
 
 data Operand = Reg Register
@@ -86,7 +88,7 @@ data Operand = Reg Register
 
 data MemoryOperand = MemOp {
     segment :: Maybe Register
-  , offset  :: Maybe Integer
+  , disp    :: Maybe Literal
   , base    :: Maybe Register
   , index   :: Maybe Register
   , scale   :: Maybe Integer
@@ -101,6 +103,8 @@ data Register =
               | AX  | BX  | CX  | DX  -- 16
               | AH  | BH  | CH  | DH  -- 8
               | AL  | BL  | CL  | DL  -- 8
+            -- instruction pointer
+              | RIP | IP
             -- | Segment
               | CS | DS | ES | FS | GS | SS
             -- Indexes and pointers
