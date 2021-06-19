@@ -11,7 +11,7 @@
 html,
 body {
     height: 100%;
-    background-color: #F2F7F2;
+    background-color: #e4ebe4;
 }
 
 /* #header {
@@ -58,7 +58,7 @@ body {
 
 #middle-panel {
     flex-grow: 1;
-    background-color: #F2F7F2;
+    background-color: #e4ebe4;
 }
 
 #editor-control-panel {
@@ -77,24 +77,21 @@ body {
 }
 
 #insight-panel {
-    background-color: #F2F7F2;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #FAFFFA;
     border-top: #1F271B solid 1.5px;
     font-size: 20px;
     color: #1F271B;
-    /* border-top: 1px solid #E7E7E7; */
     text-align: justify;
     padding: 20px;
-    position: fixed;
     left: 0;
-    bottom: 0;
-    max-height: 15px;
-    transition: max-height 0.15s ease-out;
-    width: 100%;
-    /* display: flex;
-    flex-direction: row; */
-  }
+    height: 10px;
+    transition: height 0.15s;
+    padding-bottom: 15px;
+}
 
-  #insight-panel:hover #insight-panel{
-    max-height: 500px;
-    transition: max-height 0.25s ease-in;
+#insight-panel:hover {
+    height: 300px;
 }
