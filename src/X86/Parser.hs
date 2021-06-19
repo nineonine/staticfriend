@@ -1,7 +1,7 @@
 module X86.Parser where
 
 {-
-    Parse AT&T-like assembly language
+    Parse AT&T-like x86 assembly language
 -}
 
 import Protolude hiding (try)
@@ -17,8 +17,15 @@ import X86.AST
 
 type Parser = Parsec Void Text
 
-parseX86Source :: Text -> X86Program
-parseX86Source str = undefined
+parseX86Source :: Text -> (X86Program, [ParseErrorBundle Text Void])
+parseX86Source src = go ([],[]) (lines src)
+    where
+    go acc [] = acc
+    go (acc,errs) (i:is)
+        | res <- parse parseOpCode "" i
+        = case res of
+            Left e -> go (acc,errs<>[e]) is
+            Right v -> go (acc<>[v],errs) is
 
 parseOpCode :: Parser Opcode
 parseOpCode = do

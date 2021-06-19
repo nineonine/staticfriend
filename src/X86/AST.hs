@@ -11,14 +11,13 @@ https://wiki.cdot.senecacollege.ca/wiki/X86_64_Register_and_Instruction_Quick_St
 
 -}
 
-type LabelId = Text
-type Function = Text
+type SymbolId = Text
 
 type X86Program = [Opcode]
 
 data Opcode = Instr Instruction
             | Directive Text [Text]
-            | Label LabelId
+            | Label SymbolId
             | Comment Text
             | NotImplementedOpcode Text
             deriving (Show, Eq)
@@ -37,7 +36,7 @@ readOSize _   = panic "readOSize"
 data Instruction
     = Add OSize Operand Operand
     | Sub OSize Operand Operand
-    | Call Function
+    | Call OSize Operand
     | Lea OSize Operand Operand
     | Mov OSize Operand Operand
     | Push OSize Operand
@@ -58,9 +57,6 @@ numOfOperands mnem
     | otherwise
     = panic "numOfOperands: not implemented"
 
-mkCallInstr :: Function -> Instruction
-mkCallInstr = Call
-
 mkINstr_os0 :: Text -> (OSize -> Instruction)
 mkINstr_os0 = \case
     "ret" -> Ret
@@ -70,6 +66,7 @@ mkINstr_os1 :: Text -> (OSize -> Operand -> Instruction)
 mkINstr_os1 = \case
     "push" -> Push
     "pop"  -> Pop
+    "call" -> Call
     _else -> panic ("mkINstr_os1: " <> _else)
 
 mkINstr_os2 :: Text -> (OSize -> Operand -> Operand -> Instruction)
@@ -94,7 +91,7 @@ data MemoryOperand = MemOp {
   , scale   :: Maybe Integer
 } deriving (Show, Eq)
 
-data Literal = I Int | D Double | Lbl LabelId deriving (Show, Eq)
+data Literal = I Int | D Double | Lbl SymbolId deriving (Show, Eq)
 
 data Register =
             -- | General Purpose
