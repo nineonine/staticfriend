@@ -2,7 +2,6 @@ module Session.Request where
 
 import Protolude
 import Data.Aeson (FromJSON)
-import GHC.Generics
 
 data SessionRequest = SessionRequest
     { session_source       :: Text

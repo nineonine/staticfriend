@@ -1,7 +1,6 @@
 module Analysis.Glean where
 
 import Protolude
-import Data.Aeson
 import qualified Data.IntMap.Strict as IntMap
 
 import Analysis.InfoItem

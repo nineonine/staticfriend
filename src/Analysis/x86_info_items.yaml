@@ -1,9 +1,6 @@
 - - GeneralInfo
   - |
-      very very
-      long and
-      multiline sentence
-      over here
+      Examples are created using the AT&T assembly syntax. The main advantage of using this syntax is its compatibility with the GCC inline assembly syntax. However, this is not the only syntax that is used to represent x86 operations. For example, NASM uses a different syntax to represent assembly mnemonics, operands and addressing modes, as do some High-Level Assemblers. The AT&T syntax is the standard on Unix-like systems but some assemblers use the Intel syntax, or can, like GAS itself, accept both.
 - - OperationSuffixes
   - |
       GAS assembly instructions are generally suffixed with the letters "b", "s", "w", "l", "q" or "t" to determine what size operand is being manipulated.
@@ -14,3 +11,31 @@
         q = quad (64 bit).
         t = ten bytes (80-bit floating point).
       If the suffix is not specified, and there are no memory operands for the instruction, GAS infers the operand size from the size of the destination register operand (the final operand).
+- - OperandPrefixes
+  - |
+      When referencing a register, the register needs to be prefixed with a "%". Constant numbers need to be prefixed with a "$".
+- - AddressOperandSyntax
+  - |
+      There are up to 4 parameters of an address operand that are presented in the syntax segment:displacement(base register, index register, scale factor). This is equivalent to segment:[base register + displacement + index register * scale factor] in Intel syntax.
+      The base, index and displacement components can be used in any combination, and every component can be omitted; omitted components are excluded from the calculation above
+        movl    -8(%ebp, %edx, 4), %eax  # Full example: load *(ebp + (edx * 4) - 8) into eax
+        movl    -4(%ebp), %eax           # Typical example: load a stack variable into eax
+        movl    (%ecx), %edx             # No index: copy the target of a pointer into a register
+        leal    8(,%eax,4), %eax         # Arithmetic: multiply eax by 4 and add 8
+        leal    (%edx,%eax,2), %eax      # Arithmetic: multiply eax by 2 and add edx
+- - Comments
+  - |
+      A comment is a piece of regular text that the assembler just discards when turning assembly code into machine code. In assembly, comments are usually denoted by a semicolon ;, although GAS uses # for single line comments and /* ... */ for block comments possibly spanning multiple lines
+- - Directives
+  - |
+      Directives are commands that are part of the assembler syntax but are not related to the x86 processor instruction set. All assembler directives begin with a period (.) (ASCII 0x2E).
+      https://sourceware.org/binutils/docs/as/Pseudo-Ops.html
+- - Registers
+  - |
+      Registers are like variables built in the processor. Using registers instead of memory to store values makes the process faster and cleaner.
+- - Operands
+  - |
+      An x86 instruction can have zero to three operands. Operands are separated by commas (,) (ASCII 0x2C). For instructions with two operands, the first (lefthand) operand is the source operand, and the second (righthand) operand is the destination operand (that is, source->destination).
+- - InstrPtrRelAddr
+  - |
+      A new addressing form, RIP-relative (relative instruction-pointer) addressing, is implemented in 64-bit mode. An effective address is formed by adding displacement to the 64-bit RIP of the next instruction.
