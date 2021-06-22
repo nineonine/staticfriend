@@ -1,10 +1,8 @@
 module Session.State where
 
 import Protolude
-import Data.Map.Strict
 
-import Data.Aeson (FromJSON, ToJSON)
-import GHC.Generics
+import Data.Aeson (ToJSON)
 
 import Analysis.InfoItem
 
