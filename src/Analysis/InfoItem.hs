@@ -17,6 +17,7 @@ data InfoItemLabel
     | Registers
     | Operands
     | InstrPtrRelAddr
+    | Labels
     deriving (Show, Eq, Ord, Generic, ToJSON, ToJSONKey, FromJSON, FromJSONKey)
 
 newtype InfoItemBody = InfoItemBody Text deriving (Show, Eq, Generic, ToJSON, FromJSON)

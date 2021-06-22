@@ -39,3 +39,6 @@
 - - InstrPtrRelAddr
   - |
       A new addressing form, RIP-relative (relative instruction-pointer) addressing, is implemented in 64-bit mode. An effective address is formed by adding displacement to the 64-bit RIP of the next instruction.
+- - Labels
+  - |
+      A label can be placed at the beginning of a statement. During assembly, the label is assigned the current value of the active location counter and serves as an instruction operand. There are two types of lables: symbolic and numeric.
