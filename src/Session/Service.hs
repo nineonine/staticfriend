@@ -1,11 +1,12 @@
 module Session.Service where
 
 import Prelude hiding (readFile, lines)
-import Protolude (readFile, lines)
+import Protolude (readFile, lines, when)
 import qualified Data.Text as T
 import qualified Data.Map.Strict as Map
 
 
+import Analysis.InfoItem
 import Session.Request
 import Session.Snippet
 import Session.State
@@ -17,10 +18,11 @@ loadSourceFiles snipReq = do
     srcContents <- readFile inFile
     targetContents  <- readFile outFile
     let (ast,errs) = parseX86Source targetContents
-    putStrLn ("[INFO] Parsed AST: " <> show ast)
-    putStrLn ("[WARN] Parsing Errors: " <> show errs)
+    when (not $ null errs) (putStrLn ("[WARN] Parsing Errors: " <> show errs))
+    lkp <- getInfoItemLookup
+    putStrLn ("[INFO] Got this InfoItemLookup: " <> show lkp)
     let targetWithMeta = Map.fromList (zip [1..] (lines targetContents))
-    return (mkSessionState srcContents targetContents targetWithMeta)
+    return (mkSessionState srcContents targetContents targetWithMeta lkp)
 
 parseSessionRequest :: SessionRequest -> SnippetRequest
 parseSessionRequest SessionRequest{..} = SnippetRequest src target prog opt
