@@ -1,4 +1,4 @@
-module Session.State where
+module Session.Response where
 
 import Protolude
 

@@ -9,18 +9,16 @@ import qualified Data.Map.Strict as Map
 import Analysis.InfoItem
 import Session.Request
 import Session.Snippet
-import Session.State
+import Session.Response
 import X86.Parser
 
-loadSourceFiles :: SnippetRequest -> IO SessionState
-loadSourceFiles snipReq = do
+loadSourceFiles :: SnippetRequest -> InfoItemLookup -> IO SessionState
+loadSourceFiles snipReq lkp = do
     let (inFile,outFile) = getLangFiles snipReq
     srcContents <- readFile inFile
     targetContents  <- readFile outFile
     let (ast,errs) = parseX86Source targetContents
     when (not $ null errs) (putStrLn ("[WARN] Parsing Errors: " <> show errs))
-    lkp <- getInfoItemLookup
-    putStrLn ("[INFO] Got this InfoItemLookup: " <> show lkp)
     let targetWithMeta = Map.fromList (zip [1..] (lines targetContents))
     return (mkSessionState srcContents targetContents targetWithMeta lkp)
 

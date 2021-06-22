@@ -30,10 +30,11 @@ library
       StaticFriend
       Analysis.Glean
       Analysis.InfoItem
+      Session.Logger
       Session.Request
+      Session.Response
       Session.Service
       Session.Snippet
-      Session.State
       X86.AST
       X86.Parser
   default-extensions:
