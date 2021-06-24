@@ -2,18 +2,18 @@ module Analysis.Glean where
 
 import Protolude
 import Data.List (union)
-import qualified Data.IntMap.Strict as IntMap
+import qualified Data.Map.Strict as M
 
 import Analysis.InfoItem
 import X86.AST
 
-gleanInfoItems :: X86Program -> IntMap.IntMap [InfoItemLabel]
-gleanInfoItems prog = go IntMap.empty (zip [1..] prog)
-    where
-    go acc [] = acc
-    go acc ((i,opcode):rest)
-        | items <- gleanFromOpcode opcode
-        = go (IntMap.insert i items acc) rest
+gleanInfoItems :: X86Program -> InfoItemLookup -> [[InfoItem]]
+gleanInfoItems prog infoItemLookup = map glean prog where
+    glean opcode =
+        map (\lbl ->
+                InfoItem lbl (fromMaybe (panic "infoItemLookup")
+                                $ M.lookup lbl infoItemLookup)
+            ) (gleanFromOpcode opcode)
 
 gleanFromOpcode :: Opcode -> [InfoItemLabel]
 gleanFromOpcode (Instr i) = [GeneralInfo] <> gleanInstr i
@@ -49,3 +49,9 @@ gleanOperand :: Operand -> [InfoItemLabel]
 gleanOperand (Reg r) = [Registers]
 gleanOperand (Memory memOp) = [AddressOperandSyntax]
 gleanOperand (Immediate lit) = []
+
+gleanRegister :: Register -> [InfoItemLabel]
+gleanRegister _ = []
+
+gleanLiteral :: Literal -> [InfoItemLabel]
+gleanLiteral _ = []

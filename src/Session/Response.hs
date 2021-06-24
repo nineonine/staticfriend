@@ -8,12 +8,12 @@ import Analysis.InfoItem
 
 -- | Session Execution Response object
 data SessionState = SessionState
-    { source  :: Text
-    , target  :: Text
-    , target_with_meta :: Map Integer Text
+    { source   :: Text
+    , target   :: Text
+    , analysis :: InfoItemAnalysis
     , info_item_lookup :: InfoItemLookup
-    } deriving (Show,Eq, Generic, ToJSON)
+    } deriving (Show, Eq, Generic, ToJSON)
 
-mkSessionState :: Text -> Text -> Map Integer Text -> InfoItemLookup
+mkSessionState :: Text -> Text -> InfoItemAnalysis -> InfoItemLookup
                -> SessionState
 mkSessionState = SessionState

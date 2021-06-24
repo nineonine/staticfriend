@@ -90,6 +90,9 @@ body {
     height: 10px;
     transition: height 0.15s;
     padding-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y:auto;
 }
 
 #insight-panel:hover {

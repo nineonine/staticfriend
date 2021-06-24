@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CodeArea from './CodeArea';
 import ControlPanel from './ControlPanel';
 import InsightPanel from './InsightPanel';
+import InfoItem from './InfoItem';
 
 import { sessionActions } from '../actions';
 
@@ -93,8 +94,16 @@ class SessionContainer extends React.Component {
 				/>
 				<InsightPanel>
 					<span>{ this.state.target_loc==-1 ? ''
-				          : sessionState.target_with_meta[this.state.target_loc]}
+				          : sessionState.analysis[this.state.target_loc-1].source}
 					</span>
+					{ this.state.target_loc==-1 ? ''
+					: sessionState.analysis[this.state.target_loc-1].info_items.map(function(v) {
+							return (<InfoItem
+								label={v.ii_label}
+								body={v.ii_body}
+							/>)
+						})
+					}
 				</InsightPanel>
 			</div>
 		)
