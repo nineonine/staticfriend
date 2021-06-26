@@ -34,6 +34,7 @@ class SessionContainer extends React.Component {
 		this._updateSessionState = this._updateSessionState.bind(this);
 		this._updateSessionStatePrim = this._updateSessionStatePrim.bind(this);
 		this._toggleInsightPanel = this._toggleInsightPanel.bind(this);
+		this._onKeyDown = this._onKeyDown.bind(this);
     }
 
 	_runSession(action) {
@@ -64,12 +65,30 @@ class SessionContainer extends React.Component {
 	}
 
 	_toggleInsightPanel() {
-		this.setState(function(state,props) {
-			console.log("toggled to " + !this.state.fixed_insight_panel);
+		this.setState(function(state) {
 			return {
 				fixed_insight_panel: !state.fixed_insight_panel
 			}
 		});
+	}
+
+	_onKeyDown(e) {
+		let newLOC = this.state.target_loc;
+		let isLastLine = this.props?.sessionState.analysis.length == newLOC-1;
+		if (e.keyCode == '38' && this.state.target_loc > 1) {
+			newLOC--; // key up
+		} else if (e.keyCode == '40' && !isLastLine) {
+			newLOC++; // down
+		}
+		this.setState(function() {
+			return {target_loc: newLOC}
+		})
+	}
+	componentWillMount() {
+		window.addEventListener('keydown', this._onKeyDown);
+	}
+	componentWillUnmount() {
+		window.removeEventListener('keydown', this._onKeyDown);
 	}
 
     render() {
@@ -104,10 +123,10 @@ class SessionContainer extends React.Component {
 				/>
 				<InsightPanel fixed_insight_panel={this.state.fixed_insight_panel}>
 					<span>{ this.state.target_loc==-1 ? ''
-				          : sessionState.analysis[this.state.target_loc-1].source}
+				          : sessionState.analysis[this.state.target_loc-1]?.source}
 					</span>
 					{ this.state.target_loc==-1 ? ''
-					: sessionState.analysis[this.state.target_loc-1].info_items.map(function(v) {
+					: sessionState.analysis[this.state.target_loc-1]?.info_items.map(function(v) {
 							return (<InfoItem
 								label={v.ii_label}
 								body={v.ii_body}
