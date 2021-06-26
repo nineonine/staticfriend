@@ -25,16 +25,16 @@ class SessionContainer extends React.Component {
 			optimization_opt: 'O0',
 			program_opt: 'HelloWorld',
 			target_loc: -1,
-			current_insight: ''
+			current_insight: '',
+
+			// UI state
+			fixed_insight_panel: false
 		}
 		this._runSession = this._runSession.bind(this);
 		this._updateSessionState = this._updateSessionState.bind(this);
 		this._updateSessionStatePrim = this._updateSessionStatePrim.bind(this);
+		this._toggleInsightPanel = this._toggleInsightPanel.bind(this);
     }
-
-	componentDidUpdate() {
-		// console.log("componentDidUpdate: ", this.state, this.props);
-	}
 
 	_runSession(action) {
 		return function(a) {
@@ -63,6 +63,15 @@ class SessionContainer extends React.Component {
 		return (v, f) => {this.setState({[stateField]: v});}
 	}
 
+	_toggleInsightPanel() {
+		this.setState(function(state,props) {
+			console.log("toggled to " + !this.state.fixed_insight_panel);
+			return {
+				fixed_insight_panel: !state.fixed_insight_panel
+			}
+		});
+	}
+
     render() {
 		const {sessionState} = this.props;
 		const {
@@ -83,6 +92,7 @@ class SessionContainer extends React.Component {
 					opt_onChange={this._runSession(this._updateSessionState('optimization_opt'))}
 					program_sample_onChange={this._runSession(this._updateSessionState('program_opt'))}
 					target_loc={this.state.target_loc}
+					toggle_insight_panel={this._toggleInsightPanel}
 				/>
 				<CodeArea
 					source={sessionState.source}
@@ -92,7 +102,7 @@ class SessionContainer extends React.Component {
 					update_target_loc={this._updateSessionStatePrim('target_loc')}
 					target_loc={this.state.target_loc}
 				/>
-				<InsightPanel>
+				<InsightPanel fixed_insight_panel={this.state.fixed_insight_panel}>
 					<span>{ this.state.target_loc==-1 ? ''
 				          : sessionState.analysis[this.state.target_loc-1].source}
 					</span>

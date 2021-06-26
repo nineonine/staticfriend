@@ -58,6 +58,13 @@ function ControlPanel(props) {
           onChange={program_sample_onChange}
         />
         <span style={{'margin-top':'25px'}}>Selected Line:  {target_loc}</span>
+        <div id={"fix-panel-switch"}>
+          <span id={"fixed-panel-switch-lbl"}>Fixed insights</span>
+          <label className={"switch"}>
+            <input type={"checkbox"} onChange={props.toggle_insight_panel} />
+              <span class="slider round"></span>
+          </label>
+        </div>
       </div>
     );
 }
