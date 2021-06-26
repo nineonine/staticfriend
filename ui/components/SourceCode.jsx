@@ -21,9 +21,8 @@ function SourceCode(props) {
 					 cursor: 'pointer',
 					 ...(lineNumber==props.target_loc ? {'background-color':'white'} : {})
 				   },
-			  onClick: () => {
-				props.update_target_loc?.(lineNumber)}}
-		)}
+			onClick: () => props.update_target_loc?.(lineNumber)
+		})}
 	>
 	  {props.source}
 	</SyntaxHighlighter>
