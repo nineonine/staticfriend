@@ -85,6 +85,7 @@ body {
     color: #1F271B;
     text-align: justify;
     padding: 10px;
+    padding-top: 20px;
     left: 0;
     height: 10px;
     transition: height 0.15s;
@@ -175,7 +176,7 @@ input:checked + .slider:before {
 
 #selected-line-span {
     margin-left: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-weight: bold;
 }
 
@@ -192,6 +193,7 @@ input:checked + .slider:before {
 .info-item-header {
     font-size: medium;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .info-item-description {
