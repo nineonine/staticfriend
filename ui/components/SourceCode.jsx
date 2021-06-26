@@ -19,7 +19,7 @@ function SourceCode(props) {
 			id: 'target-line-' + lineNumber,
 			style: { display: 'block',
 					 cursor: 'pointer',
-					 ...(lineNumber==props.target_loc ? {'background-color':'white'} : {})
+					 ...(lineNumber==props.target_loc ? {'background-color':'#0B4F6C'} : {})
 				   },
 			onClick: () => props.update_target_loc?.(lineNumber)
 		})}
