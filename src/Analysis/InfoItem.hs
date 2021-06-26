@@ -1,10 +1,15 @@
 module Analysis.InfoItem where
 
 import Protolude hiding (toList)
+import Protolude.Partial (read)
 import Data.Aeson
+import Data.Aeson.Types
+import qualified Data.Text as T
 import Data.Vector (Vector)
 import qualified Data.Vector as V
 import Data.Yaml
+
+_DIRECTIVE_PREFIX :: Text = "Directive."
 
 data InfoItem = InfoItem {
     ii_label :: !InfoItemLabel
@@ -23,6 +28,7 @@ instance ToJSON InfoItemAnalysis where
                 , "info_items" .= infoItems]
 
 data InfoItemLabel
+    -- General
     = GeneralInfo
     | OperationSuffixes
     | OperandPrefixes
@@ -33,7 +39,26 @@ data InfoItemLabel
     | Operands
     | InstrPtrRelAddr
     | Labels
-    deriving (Show, Eq, Ord, Generic, ToJSON, ToJSONKey, FromJSON, FromJSONKey)
+    -- Special
+    | DirectiveInfo !Text -- ^ Directive name
+    deriving (Show, Read, Eq, Ord, Generic, FromJSON)
+
+instance ToJSONKey InfoItemLabel where
+    toJSONKey = toJSONKeyText (\case
+        DirectiveInfo dirname -> _DIRECTIVE_PREFIX <> dirname
+        _else -> T.pack (show _else))
+
+instance ToJSON InfoItemLabel where
+    toJSON (DirectiveInfo dir) = String (_DIRECTIVE_PREFIX <> dir)
+    toJSON _else = String (T.pack $ show _else)
+
+instance FromJSONKey InfoItemLabel where
+    fromJSONKey = FromJSONKeyText (\v ->
+        if | _DIRECTIVE_PREFIX `T.isPrefixOf` v
+           , dirname <- T.drop (T.length _DIRECTIVE_PREFIX) v
+           -> DirectiveInfo dirname
+           | otherwise
+           -> read $ T.unpack v)
 
 newtype InfoItemBody = InfoItemBody Text deriving (Show, Eq, Generic, ToJSON, FromJSON)
 
