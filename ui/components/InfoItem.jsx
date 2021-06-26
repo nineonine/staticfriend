@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function InfoItem(props) {
+    const [expandedDescr, setExpandedDescr] = useState(false);
     return (
         <div className={'info-item'}>
-            <h5>
+            <div onClick={() => setExpandedDescr(!expandedDescr)} className={"info-item-header"}>
                 {props.label}
-            </h5>
-            <p>
-                {props.body}
-            </p>
+            </div>
+            {expandedDescr &&
+                <div className={"info-item-description"}>
+                    {props.body}
+                </div>
+            }
         </div>
     );
 }
