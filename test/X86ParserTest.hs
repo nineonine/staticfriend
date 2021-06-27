@@ -51,6 +51,8 @@ testx86Parser = hspec $ do
             parse parseOpCode "" "     \t\t .section __TEXT  , __cstring ,  cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
         it "should not parse something as directive if it doesn't start with a dot" $ do
             parse parseDirective "" `shouldFailOn` "   section"
+        it "should parse directive with underscores in its name" $ do
+            parse parseOpCode "" ".cfi_startproc" `shouldParse` (Directive "cfi_startproc" [])
         -- LABELS
         it "should parse label" $ do
             parse parseOpCode "" "someLabel:" `shouldParse` (Label "someLabel")

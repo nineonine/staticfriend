@@ -66,7 +66,8 @@ parseOSize = readOSize <$> choice (map char ['t','q','l','w','s','b'])
 parseDirective :: Parser (Text,[Text])
 parseDirective = do
     void $ char '.'
-    dirName :: Text <- takeWhile1P Nothing isAlphaNum
+    dirName :: Text <- takeWhile1P Nothing ((||) <$> isAlphaNum
+                                                 <*> (=='_'))
     space
     dir_args :: [Text] <-
         sepBy
