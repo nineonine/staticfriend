@@ -11,13 +11,12 @@ gleanInfoItems :: X86Program -> InfoItemLookup -> [[InfoItem]]
 gleanInfoItems prog infoItemLookup = map glean prog where
     glean opcode =
         map (\lbl ->
-                InfoItem lbl (fromMaybe (panic "infoItemLookup")
-                                $ M.lookup lbl infoItemLookup)
+                InfoItem lbl (fromMaybe emptyInfoItemBody (M.lookup lbl infoItemLookup))
             ) (gleanFromOpcode opcode)
 
 gleanFromOpcode :: Opcode -> [InfoItemLabel]
 gleanFromOpcode (Instr i) = [GeneralInfo] <> gleanInstr i
-gleanFromOpcode (Directive _ _) = [Directives]
+gleanFromOpcode (Directive d _) = [Directives, DirectiveInfo d]
 gleanFromOpcode (Label _) = [Labels]
 gleanFromOpcode (Comment _) = [Comments]
 gleanFromOpcode (NotImplementedOpcode _) = []

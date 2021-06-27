@@ -62,6 +62,9 @@ instance FromJSONKey InfoItemLabel where
 
 newtype InfoItemBody = InfoItemBody Text deriving (Show, Eq, Generic, ToJSON, FromJSON)
 
+emptyInfoItemBody :: InfoItemBody
+emptyInfoItemBody = InfoItemBody "<no description>"
+
 _x86infoitems_fp :: FilePath
 _x86infoitems_fp = "./src/Analysis/x86_info_items.yaml"
 
