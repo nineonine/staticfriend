@@ -15,9 +15,6 @@ body {
     overflow-y: hidden;
 }
 
-/* #header {
-} */
-
 .source-header {
     color: #FF7F11;
     padding-bottom: 5px;
@@ -27,7 +24,6 @@ body {
 }
 
 .syntax-highlight-container {
-    /* height: 100%; */
     margin: 0 15 0 15;
 }
 
@@ -84,10 +80,8 @@ body {
     font-size: 20px;
     color: #1F271B;
     text-align: justify;
-    padding: 10px;
-    padding-top: 20px;
+    padding-left: 10px;
     left: 0;
-    height: 10px;
     transition: height 0.15s;
     padding-bottom: 15px;
     display: flex;
@@ -174,9 +168,13 @@ input:checked + .slider:before {
     margin-top: 30px;
 }
 
+#insight-panel-header {
+    display: flex;
+    justify-content: center;
+}
+
 #selected-line-span {
-    margin-left: 10px;
-    margin-bottom: 25px;
+    margin: 20px;
     font-weight: bold;
 }
 

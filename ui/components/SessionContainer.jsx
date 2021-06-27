@@ -122,9 +122,15 @@ class SessionContainer extends React.Component {
 					target_loc={this.state.target_loc}
 				/>
 				<InsightPanel fixed_insight_panel={this.state.fixed_insight_panel}>
-					<span id={'selected-line-span'}>{ this.state.target_loc==-1 ? ''
+					<div id={'insight-panel-header'}>
+						<span id={'selected-line-span'}>
+				          { this.state.target_loc==-1
+						  ? <span style={{"font-size":"medium","color":"#AAAAAA"}}>
+							  Select line of code ...
+							</span>
 				          : sessionState.analysis[this.state.target_loc-1]?.source}
-					</span>
+						</span>
+					</div>
 					{ this.state.target_loc==-1 ? ''
 					: sessionState.analysis[this.state.target_loc-1]?.info_items.map(function(v) {
 							return (<InfoItem
