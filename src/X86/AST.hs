@@ -13,14 +13,15 @@ https://wiki.cdot.senecacollege.ca/wiki/X86_64_Register_and_Instruction_Quick_St
 
 type SymbolId = Text
 
-type X86Program = [Opcode]
+type X86Program = [Instruction]
 
-data Opcode = Instr Instruction
-            | Directive Text [Text]
-            | Label SymbolId
-            | Comment Text
-            | NotImplementedOpcode Text
-            deriving (Show, Eq)
+data Instruction
+    = Op Operation
+    | Directive Text [Text]
+    | Label SymbolId
+    | Comment Text
+    | NotImplementedOpcode Text
+    deriving (Show, Eq)
 
 data OSize = T | Q | L | W | S | B deriving (Show, Eq)
 
@@ -33,7 +34,7 @@ readOSize 'b' = B
 readOSize 's' = S
 readOSize _   = panic "readOSize"
 
-data Instruction
+data Operation
     = Add OSize Operand Operand
     | Sub OSize Operand Operand
     | Call OSize Operand
@@ -57,26 +58,26 @@ numOfOperands mnem
     | otherwise
     = panic "numOfOperands: not implemented"
 
-mkINstr_os0 :: Text -> (OSize -> Instruction)
-mkINstr_os0 = \case
+mkOp_os0 :: Text -> (OSize -> Operation)
+mkOp_os0 = \case
     "ret" -> Ret
-    _else -> panic ("mkINstr_os0: " <> _else)
+    _else -> panic ("mkOp_os0: " <> _else)
 
-mkINstr_os1 :: Text -> (OSize -> Operand -> Instruction)
-mkINstr_os1 = \case
+mkOp_os1 :: Text -> (OSize -> Operand -> Operation)
+mkOp_os1 = \case
     "push" -> Push
     "pop"  -> Pop
     "call" -> Call
-    _else -> panic ("mkINstr_os1: " <> _else)
+    _else -> panic ("mkOp_os1: " <> _else)
 
-mkINstr_os2 :: Text -> (OSize -> Operand -> Operand -> Instruction)
-mkINstr_os2 = \case
+mkOp_os2 :: Text -> (OSize -> Operand -> Operand -> Operation)
+mkOp_os2 = \case
     "add" -> Add
     "sub" -> Sub
     "lea" -> Lea
     "mov" -> Mov
     "xor" -> Xor
-    _else -> panic ("mkINstr_os2: " <> _else)
+    _else -> panic ("mkOp_os2: " <> _else)
 
 data Operand = Reg Register
              | Memory MemoryOperand

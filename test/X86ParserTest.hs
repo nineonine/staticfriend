@@ -30,41 +30,41 @@ testx86Parser = hspec $ do
             parse parseOSize "" `shouldFailOn` "r"
         -- DIRECTIVES
         it "should parse no arg directive" $ do
-            parse parseOpCode "" ".section" `shouldParse` (Directive "section" [])
+            parse parseInstr "" ".section" `shouldParse` (Directive "section" [])
         it "should parse no arg directive (with spaces 1)" $ do
-            parse parseOpCode "" "       .section" `shouldParse` (Directive "section" [])
+            parse parseInstr "" "       .section" `shouldParse` (Directive "section" [])
         it "should parse no arg directive (with spaces 2)" $ do
-            parse parseOpCode "" "       .section    \t\n" `shouldParse` (Directive "section" [])
+            parse parseInstr "" "       .section    \t\n" `shouldParse` (Directive "section" [])
         it "should parse no arg directive (with spaces 3)" $ do
-            parse parseOpCode "" "   \t\t\t    .section    \t\n" `shouldParse` (Directive "section" [])
+            parse parseInstr "" "   \t\t\t    .section    \t\n" `shouldParse` (Directive "section" [])
         it "should parse directive with 1 arg" $ do
-            parse parseOpCode "" "  .globl __main" `shouldParse` (Directive "globl" ["__main"])
+            parse parseInstr "" "  .globl __main" `shouldParse` (Directive "globl" ["__main"])
         it "should parse directive with 1 arg (wih spaces 1)" $ do
-            parse parseOpCode "" "  .globl \t   __main   \t" `shouldParse` (Directive "globl" ["__main"])
+            parse parseInstr "" "  .globl \t   __main   \t" `shouldParse` (Directive "globl" ["__main"])
         it "should parse directive with 1 arg (wih spaces 2)" $ do
-            parse parseOpCode "" ".globl \t\t\t   __main  \n \t" `shouldParse` (Directive "globl" ["__main"])
+            parse parseInstr "" ".globl \t\t\t   __main  \n \t" `shouldParse` (Directive "globl" ["__main"])
         it "should parse directive with many args" $ do
-            parse parseOpCode "" ".section __TEXT,__cstring,cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
+            parse parseInstr "" ".section __TEXT,__cstring,cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
         it "should parse directive with many args (with spaces 1)" $ do
-            parse parseOpCode "" "     \t\t .section __TEXT,   __cstring,  cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
+            parse parseInstr "" "     \t\t .section __TEXT,   __cstring,  cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
         it "should parse directive with many args (with spaces 1)" $ do
-            parse parseOpCode "" "     \t\t .section __TEXT  , __cstring ,  cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
+            parse parseInstr "" "     \t\t .section __TEXT  , __cstring ,  cstring_literals" `shouldParse` (Directive "section" ["__TEXT","__cstring","cstring_literals"])
         it "should not parse something as directive if it doesn't start with a dot" $ do
             parse parseDirective "" `shouldFailOn` "   section"
         it "should parse directive with underscores in its name" $ do
-            parse parseOpCode "" ".cfi_startproc" `shouldParse` (Directive "cfi_startproc" [])
+            parse parseInstr "" ".cfi_startproc" `shouldParse` (Directive "cfi_startproc" [])
         -- LABELS
         it "should parse label" $ do
-            parse parseOpCode "" "someLabel:" `shouldParse` (Label "someLabel")
+            parse parseInstr "" "someLabel:" `shouldParse` (Label "someLabel")
         it "should parse label (with spaces)" $ do
-            parse parseOpCode "" "    someLabel:   " `shouldParse` (Label "someLabel")
+            parse parseInstr "" "    someLabel:   " `shouldParse` (Label "someLabel")
         it "should parse label 2" $ do
-            parse parseOpCode "" "L_.str:" `shouldParse` (Label "L_.str")
+            parse parseInstr "" "L_.str:" `shouldParse` (Label "L_.str")
         -- COMMENTS (TODO: comments after other opcodes)
         it "should parse comment" $ do
-            parse parseOpCode "" "# some comment" `shouldParse` (Comment "some comment")
+            parse parseInstr "" "# some comment" `shouldParse` (Comment "some comment")
         it "should parse comment (with spaces)" $ do
-            parse parseOpCode "" "       # some comment" `shouldParse` (Comment "some comment")
+            parse parseInstr "" "       # some comment" `shouldParse` (Comment "some comment")
         -- Registers
         for_ rEGS $ \reg ->
             it ("should parse " <> unpack reg) $ do
@@ -120,13 +120,13 @@ testx86Parser = hspec $ do
             parse parseLiteral "" "$labelll" `shouldParse` (Lbl "labelll")
         -- Instructons
         it "should parse 0 operand instruction #1" $ do
-            parse parseInstruction "" "    retq" `shouldParse` (Ret Q)
+            parse parseOp "" "    retq" `shouldParse` (Ret Q)
         it "should parse 1 operand instruction #1" $ do
-            parse parseInstruction "" " popq %rbp" `shouldParse` (Pop Q (Reg RBP))
+            parse parseOp "" " popq %rbp" `shouldParse` (Pop Q (Reg RBP))
         it "should parse 1 operand instruction #2" $ do
-            parse parseInstruction "" "   pushq %rbp" `shouldParse` (Push Q (Reg RBP))
+            parse parseOp "" "   pushq %rbp" `shouldParse` (Push Q (Reg RBP))
         it "should parse 2 operand instruction #1" $ do
-            parse parseInstruction "" "movl    $0, -4(%rbp)" `shouldParse`
+            parse parseOp "" "movl    $0, -4(%rbp)" `shouldParse`
                 (Mov L (Immediate (I 0)) (Memory
                     (MemOp { segment = Nothing
                            , disp = Just (I (-4))
@@ -134,11 +134,11 @@ testx86Parser = hspec $ do
                            , index = Nothing
                            , scale = Nothing})))
         it "should parse 2 operand instruction #2" $ do
-            parse parseInstruction "" "movq  %rsp, %rbp" `shouldParse` (Mov Q (Reg RSP) (Reg RBP))
+            parse parseOp "" "movq  %rsp, %rbp" `shouldParse` (Mov Q (Reg RSP) (Reg RBP))
         it "should parse 2 operand instruction #3" $ do
-            parse parseInstruction "" " movb    $3, %al" `shouldParse` (Mov B (Immediate (I 3)) (Reg AL))
+            parse parseOp "" " movb    $3, %al" `shouldParse` (Mov B (Immediate (I 3)) (Reg AL))
         it "should parse 2 operand instruction with rip relative addressing" $ do
-            parse parseInstruction "" "  leaq  L_.str(%rip), %rdi" `shouldParse`
+            parse parseOp "" "  leaq  L_.str(%rip), %rdi" `shouldParse`
                 (Lea Q (Memory
                         $ MemOp { segment = Nothing
                                 , disp    = Just (Lbl "L_.str")
@@ -147,6 +147,6 @@ testx86Parser = hspec $ do
                                 , scale   = Nothing})
                        (Reg RDI))
         it "should parse 2 operand instruction with two registers" $ do
-            parse parseInstruction "" " xorl   %eax, %eax" `shouldParse` (Xor L (Reg EAX) (Reg EAX))
+            parse parseOp "" " xorl   %eax, %eax" `shouldParse` (Xor L (Reg EAX) (Reg EAX))
         it "should parse 2 operand instruction with literal register operands" $ do
-            parse parseInstruction "" "  addq    $16, %rsp" `shouldParse` (Add Q (Immediate (I 16)) (Reg RSP))
+            parse parseOp "" "  addq    $16, %rsp" `shouldParse` (Add Q (Immediate (I 16)) (Reg RSP))

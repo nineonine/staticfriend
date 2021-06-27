@@ -12,37 +12,37 @@ gleanInfoItems prog infoItemLookup = map glean prog where
     glean opcode =
         map (\lbl ->
                 InfoItem lbl (fromMaybe emptyInfoItemBody (M.lookup lbl infoItemLookup))
-            ) (gleanFromOpcode opcode)
+            ) (gleanFromInstr opcode)
 
-gleanFromOpcode :: Opcode -> [InfoItemLabel]
-gleanFromOpcode (Instr i) = [GeneralInfo] <> gleanInstr i
-gleanFromOpcode (Directive d _) = [Directives, DirectiveInfo d]
-gleanFromOpcode (Label _) = [Labels]
-gleanFromOpcode (Comment _) = [Comments]
-gleanFromOpcode (NotImplementedOpcode _) = []
+gleanFromInstr :: Instruction -> [InfoItemLabel]
+gleanFromInstr (Op o) = [GeneralInfo] <> gleanOp o
+gleanFromInstr (Directive d _) = [Directives, DirectiveInfo d]
+gleanFromInstr (Label _) = [Labels]
+gleanFromInstr (Comment _) = [Comments]
+gleanFromInstr (NotImplementedOpcode _) = []
 
 instrInfoItems :: [InfoItemLabel]
 instrInfoItems = [OperationSuffixes, OperandPrefixes]
 
-gleanInstr :: Instruction -> [InfoItemLabel]
-gleanInstr (Add os op1 op2)
+gleanOp :: Operation -> [InfoItemLabel]
+gleanOp (Add os op1 op2)
     = instrInfoItems <> union (gleanOperand op1) (gleanOperand op2)
-gleanInstr (Sub os op1 op2)
+gleanOp (Sub os op1 op2)
     = instrInfoItems <> union (gleanOperand op1) (gleanOperand op2)
-gleanInstr (Call os op1)
+gleanOp (Call os op1)
     = instrInfoItems <> gleanOperand op1
-gleanInstr (Lea os op1 op2)
+gleanOp (Lea os op1 op2)
     = instrInfoItems <> union (gleanOperand op1) (gleanOperand op2)
-gleanInstr (Mov os op1 op2)
+gleanOp (Mov os op1 op2)
     = instrInfoItems <> union (gleanOperand op1) (gleanOperand op2)
-gleanInstr (Push os op1)
+gleanOp (Push os op1)
     = instrInfoItems <> gleanOperand op1
-gleanInstr (Pop os op1)
+gleanOp (Pop os op1)
     = instrInfoItems <> gleanOperand op1
-gleanInstr (Xor os op1 op2)
+gleanOp (Xor os op1 op2)
     = instrInfoItems <> union (gleanOperand op1) (gleanOperand op2)
-gleanInstr (Ret os) = [OperationSuffixes]
-gleanInstr (NotImplementedMnemonic _) = []
+gleanOp (Ret os) = [OperationSuffixes]
+gleanOp (NotImplementedMnemonic _) = []
 
 gleanOperand :: Operand -> [InfoItemLabel]
 gleanOperand (Reg r) = [Registers]

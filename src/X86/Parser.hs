@@ -5,6 +5,7 @@ module X86.Parser where
 -}
 
 import Protolude hiding (try)
+import qualified Data.Text as T
 import Protolude.Partial (read)
 
 import Data.Text hiding (map)
@@ -22,37 +23,37 @@ parseX86Source src = go ([],[]) (lines src)
     where
     go acc [] = acc
     go (acc,errs) (i:is)
-        | res <- parse parseOpCode "" i
+        | res <- parse parseInstr "" i
         = case res of
             Left e -> go (acc,errs<>[e]) is
             Right v -> go (acc<>[v],errs) is
 
-parseOpCode :: Parser Opcode
-parseOpCode = do
+parseInstr :: Parser Instruction
+parseInstr = do
     space
     choice
-        [ Instr <$> parseInstruction
+        [ Op <$> parseOp
         , (uncurry Directive) <$> parseDirective
         , Comment <$> parseComment
         , Label <$> parseLabel
         , NotImplementedOpcode <$> parseNotImpl]
 
-parseInstruction :: Parser Instruction
-parseInstruction = do
+parseOp :: Parser Operation
+parseOp = do
     space
     mnemonic <- parseMnemonic
     oSize    <- parseOSize
     space
     case numOfOperands mnemonic of
-        0 -> pure (mkINstr_os0 mnemonic oSize)
+        0 -> pure (mkOp_os0 mnemonic oSize)
         1 -> do o1 <- parseOperand
-                pure (mkINstr_os1 mnemonic oSize o1)
+                pure (mkOp_os1 mnemonic oSize o1)
         2 -> do o1 <- parseOperand
                 (char ',' >> space)
                 -- can't have immediates in dest
                 o2 <- choice [ Reg <$> parseRegister
                              , Memory <$> parseMemoryOperand]
-                pure (mkINstr_os2 mnemonic oSize o1 o2)
+                pure (mkOp_os2 mnemonic oSize o1 o2)
         3 -> panic "parseInstruction: 3 operands"
         _ -> panic "parseInstruction"
 
