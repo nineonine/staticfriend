@@ -35,3 +35,20 @@ Labels: |
 Directive.section: |
      Use the .section directive to assemble the following code into a section named name.
      This directive is only supported for targets that actually support arbitrarily named sections; on a.out targets, for example, it is not accepted, even with a standard a.out section name.
+Directive.cfi_startproc: |
+     .cfi_startproc is used at the beginning of each function that should have an entry in .eh_frame. It initializes some internal data structures. Don’t forget to close the function by .cfi_endproc.
+     Unless .cfi_startproc is used along with parameter simple it also emits some architecture dependent initial CFI instructions.
+Directive.cfi_endproc: |
+     .cfi_endproc is used at the end of a function where it closes its unwind entry previously opened by .cfi_startproc, and emits it to .eh_frame.
+Directive.globl: |
+     .global makes the symbol visible to ld. If you define symbol in your partial program, its value is made available to other partial programs that are linked with it. Otherwise, symbol takes its attributes from a symbol of the same name from another file linked into the same program.
+      Both spellings (‘.globl’ and ‘.global’) are accepted, for compatibility with other assemblers.
+Directive.cfi_def_cfa_offset: |
+     .cfi_def_cfa_offset modifies a rule for computing CFA. Register remains the same, but offset is new. Note that it is the absolute offset that will be added to a defined register to compute CFA address.
+Directive.cfi_offset: |
+     Previous value of register is saved at offset offset from CFA.
+Directive.asciz: |
+     .asciz is just like .ascii, but each string is followed by a zero byte. The “z” in ‘.asciz’ stands for “zero”. Note that multiple string arguments not separated by commas will be concatenated together and only one final zero byte will be stored.
+Directive.subsections_via_symbols: |
+     The .subsections_via_symbols directive tells the static link editor that the sections of the object file can be divided into individual blocks. These blocks are then stripped if they are not used by other code.
+     This directive applies to all section declarations in the assembly file and should be placed outside any section declarations.
