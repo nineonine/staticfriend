@@ -5,7 +5,6 @@ import Prelude
 import qualified Data.Text as T
 import Network.Wai.Middleware.Static
 import Web.Scotty
-import Control.Concurrent (threadDelay)
 
 import StaticFriend
 
@@ -25,13 +24,9 @@ main = do
             file indexHTML
 
         get "/session" $ do
-            liftAndCatchIO $ doLog Info "Dummy API"
-            liftAndCatchIO (threadDelay 330000000)
             file indexHTML
 
         post "/api/session" $ do
-            liftAndCatchIO $ doLog Info "Dummy API"
-            liftAndCatchIO (threadDelay 330000000)
             req :: SnippetRequest <- parseSessionRequest <$> jsonData
             sessionState <- liftAndCatchIO $ do
                 doLog Info ("Processing Session Request: " <> (T.pack $ show req))
