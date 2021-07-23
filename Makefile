@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := help
+
 SRC=$(SOURCE)
 OPT?=0
 LINK?=0
@@ -15,7 +17,7 @@ TMP_DIR=build
 GHC_OPTS=-fasm -fforce-recomp -ddump-to-file -ddump-asm -ddump-simpl -ddump-cmm -ddump-stg
 CFLAGS := -Wall -Wextra
 
-phony: info buildc buildhs clean configure
+phony: info clean configure help watch test-app run-app build-app dev-ui build-ui
 
 .SILENT: clean
 
