@@ -28,7 +28,7 @@ info:
 	opt --version
 	llc --version
 
-buildc:
+buildc: ## build c sample programs
 	mkdir -p $(TMP_DIR)
 	cp $(C_DIR)/$(SRC).c $(TMP_DIR)/$(SRC).c
 	clang -S -emit-llvm $(C_DIR)/$(SRC).c
@@ -39,7 +39,7 @@ ifeq ($(LINK),1)
 	clang $(TMP_DIR)/$(SRC).s -Wall -o $(TMP_DIR)/$(SRC)
 endif
 
-buildhs:
+buildhs: ## build haskell sample programs
 	mkdir -p $(TMP_DIR)
 	cp $(HS_DIR)/$(SRC).hs $(TMP_DIR)/$(SRC).hs
 	ghc -c -O$(OPT) $(TMP_DIR)/$(SRC).hs $(GHC_OPTS)
@@ -49,23 +49,26 @@ endif
 
 build: buildc buildhs
 
-clean:
+clean: ## clean build artifacts
 	find $(TMP_DIR) -type f -delete
 
-build-ui:
+build-ui: ## build client
 	node_modules/.bin/esbuild ui/main.jsx --bundle --minify --target=es6 --define:process.env.NODE_ENV="\"production\"" --outfile=static/main.js --sourcemap
 
 dev-ui:
 	node_modules/.bin/esbuild ui/main.jsx static/main.css --sourcemap --bundle --define:process.env.NODE_ENV="\"development\""  --serve --outdir=static
 
-build-app:
+build-app: ## build binary
 	stack build
 
-watch:
+watch: ## live rebuild
 	stack build --file-watch --test --no-run-tests --local-bin-path bin --copy-bins $(VERBOSE)
 
-run-app:
+run-app: ## start application
 	stack run
 
-test-app:
+test-app: ## Run application tests
 	stack test
+
+help: ## Display this message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(word 1,$(MAKEFILE_LIST)) | sed -e 's/^\(.*\):.*##\(.*\)$$/\1,\2/' | awk 'BEGIN { FS = ","}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
